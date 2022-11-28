@@ -1,0 +1,14 @@
+.row-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+
+    .user-name-column {
+        background-color: rgba(128, 128, 128, 0.13);
+        padding: 1rem;
+    }
+
+    .current-turn {
+        border: 2px solid gold;
+    }
+}

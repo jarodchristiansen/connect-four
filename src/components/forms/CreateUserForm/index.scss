@@ -1,0 +1,31 @@
+.form-container {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    max-width: 30rem;
+    margin: 2rem auto;
+    min-height: 30rem;
+    padding: 1rem 3rem;
+    gap: 2rem;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: 2px 4px 8px gray;
+
+    
+    .create-player-input {
+        border-radius: 5px;
+        width: 80%;
+        max-width: 25rem;
+        margin: 0.5rem auto;
+        padding: 0.5rem 1rem;
+    }
+
+
+    .submit-button {
+        margin: auto;
+        background-color: rgb(18, 128, 218);
+        border-radius: 5px;
+        color: white;
+        padding: 0.5rem 1rem;
+    }
+}
