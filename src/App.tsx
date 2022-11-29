@@ -3,6 +3,7 @@ import logo from "./logo.svg";
 import "./App.scss";
 import CreateUserForm from "./components/forms/CreateUserForm";
 import UsernameBanner from "./components/banners/UsernameBanner";
+import GameBoard from "./components/game/GameBoard";
 
 export interface Player {
   nickname: string;
@@ -62,6 +63,10 @@ function App() {
             currentPlayerNumber={currentPlayerNumber}
           />
           This Would Be The Game Time Screen
+          <GameBoard
+            currentPlayerNumber={currentPlayerNumber}
+            setCurrentPlayerNumber={(evt: any) => setCurrentPlayerNumber(evt)}
+          />
         </div>
       )}
     </div>
