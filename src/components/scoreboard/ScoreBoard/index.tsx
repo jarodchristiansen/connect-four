@@ -21,9 +21,13 @@ const ScoreBoard = () => {
     if (!scoreData) return [];
 
     return scoreData.map(
-      (score: { nickname: string; score: number; duration?: string }) => {
+      (
+        score: { nickname: string; score: number; duration?: string },
+        idx: number
+      ) => {
         return (
           <div className="score-row">
+            <h3>Game: {idx}</h3>
             <h3>
               <span>User:</span> <span>{score.nickname}</span>
             </h3>
