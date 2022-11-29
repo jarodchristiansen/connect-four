@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Player } from "../../../../App";
+import ScoreBoard from "../../../scoreboard/ScoreBoard";
 import "./index.scss";
 
 interface GameBoardV2Props {
@@ -12,8 +13,16 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
   const { currentPlayerNumber, setCurrentPlayerNumber, players } = props;
   const [initialPlayerNumber, setInitialPlayerNumber] =
     useState(currentPlayerNumber);
+
   const [gameIsLive, setGameIsLive] = useState(true);
   const [yellowIsNext, setYellowIsNext] = useState<null | boolean>();
+  const [score, setScore] = useState(1);
+  const [showScoreboard, setShowScoreboard] = useState(false);
+
+  const [winner, setWinner] = useState<null | {
+    nickname: string;
+    age: number;
+  }>(null);
 
   useEffect(() => {
     console.log("In USE EFFECT", players[currentPlayerNumber - 1].color);
@@ -30,151 +39,146 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
   const resetButton = document.querySelector(".reset");
   const statusSpan = document.querySelector(".status");
 
-  // columns
-  const column0 = [
-    allCells[35],
-    allCells[28],
-    allCells[21],
-    allCells[14],
-    allCells[7],
-    allCells[0],
-    topCells[0],
-  ];
-  const column1 = [
-    allCells[36],
-    allCells[29],
-    allCells[22],
-    allCells[15],
-    allCells[8],
-    allCells[1],
-    topCells[1],
-  ];
-  const column2 = [
-    allCells[37],
-    allCells[30],
-    allCells[23],
-    allCells[16],
-    allCells[9],
-    allCells[2],
-    topCells[2],
-  ];
-  const column3 = [
-    allCells[38],
-    allCells[31],
-    allCells[24],
-    allCells[17],
-    allCells[10],
-    allCells[3],
-    topCells[3],
-  ];
-  const column4 = [
-    allCells[39],
-    allCells[32],
-    allCells[25],
-    allCells[18],
-    allCells[11],
-    allCells[4],
-    topCells[4],
-  ];
-  const column5 = [
-    allCells[40],
-    allCells[33],
-    allCells[26],
-    allCells[19],
-    allCells[12],
-    allCells[5],
-    topCells[5],
-  ];
-  const column6 = [
-    allCells[41],
-    allCells[34],
-    allCells[27],
-    allCells[20],
-    allCells[13],
-    allCells[6],
-    topCells[6],
-  ];
-  const columns = [
-    column0,
-    column1,
-    column2,
-    column3,
-    column4,
-    column5,
-    column6,
-  ];
+  const columns = useMemo(() => {
+    const column0 = [
+      allCells[35],
+      allCells[28],
+      allCells[21],
+      allCells[14],
+      allCells[7],
+      allCells[0],
+      topCells[0],
+    ];
+    const column1 = [
+      allCells[36],
+      allCells[29],
+      allCells[22],
+      allCells[15],
+      allCells[8],
+      allCells[1],
+      topCells[1],
+    ];
+    const column2 = [
+      allCells[37],
+      allCells[30],
+      allCells[23],
+      allCells[16],
+      allCells[9],
+      allCells[2],
+      topCells[2],
+    ];
+    const column3 = [
+      allCells[38],
+      allCells[31],
+      allCells[24],
+      allCells[17],
+      allCells[10],
+      allCells[3],
+      topCells[3],
+    ];
+    const column4 = [
+      allCells[39],
+      allCells[32],
+      allCells[25],
+      allCells[18],
+      allCells[11],
+      allCells[4],
+      topCells[4],
+    ];
+    const column5 = [
+      allCells[40],
+      allCells[33],
+      allCells[26],
+      allCells[19],
+      allCells[12],
+      allCells[5],
+      topCells[5],
+    ];
+    const column6 = [
+      allCells[41],
+      allCells[34],
+      allCells[27],
+      allCells[20],
+      allCells[13],
+      allCells[6],
+      topCells[6],
+    ];
 
-  // rows
-  const topRow = [
-    topCells[0],
-    topCells[1],
-    topCells[2],
-    topCells[3],
-    topCells[4],
-    topCells[5],
-    topCells[6],
-  ];
-  const row0 = [
-    allCells[0],
-    allCells[1],
-    allCells[2],
-    allCells[3],
-    allCells[4],
-    allCells[5],
-    allCells[6],
-  ];
-  const row1 = [
-    allCells[7],
-    allCells[8],
-    allCells[9],
-    allCells[10],
-    allCells[11],
-    allCells[12],
-    allCells[13],
-  ];
-  const row2 = [
-    allCells[14],
-    allCells[15],
-    allCells[16],
-    allCells[17],
-    allCells[18],
-    allCells[19],
-    allCells[20],
-  ];
-  const row3 = [
-    allCells[21],
-    allCells[22],
-    allCells[23],
-    allCells[24],
-    allCells[25],
-    allCells[26],
-    allCells[27],
-  ];
-  const row4 = [
-    allCells[28],
-    allCells[29],
-    allCells[30],
-    allCells[31],
-    allCells[32],
-    allCells[33],
-    allCells[34],
-  ];
-  const row5 = [
-    allCells[35],
-    allCells[36],
-    allCells[37],
-    allCells[38],
-    allCells[39],
-    allCells[40],
-    allCells[41],
-  ];
-  const rows = [row0, row1, row2, row3, row4, row5, topRow];
+    return [column0, column1, column2, column3, column4, column5, column6];
+  }, [gameIsLive, showScoreboard, allCells]);
 
-  // variables
-  //   let yellowIsNext = true;
+  const rows = useMemo(() => {
+    // rows
+    const topRow = [
+      topCells[0],
+      topCells[1],
+      topCells[2],
+      topCells[3],
+      topCells[4],
+      topCells[5],
+      topCells[6],
+    ];
+    const row0 = [
+      allCells[0],
+      allCells[1],
+      allCells[2],
+      allCells[3],
+      allCells[4],
+      allCells[5],
+      allCells[6],
+    ];
+    const row1 = [
+      allCells[7],
+      allCells[8],
+      allCells[9],
+      allCells[10],
+      allCells[11],
+      allCells[12],
+      allCells[13],
+    ];
+    const row2 = [
+      allCells[14],
+      allCells[15],
+      allCells[16],
+      allCells[17],
+      allCells[18],
+      allCells[19],
+      allCells[20],
+    ];
+    const row3 = [
+      allCells[21],
+      allCells[22],
+      allCells[23],
+      allCells[24],
+      allCells[25],
+      allCells[26],
+      allCells[27],
+    ];
+    const row4 = [
+      allCells[28],
+      allCells[29],
+      allCells[30],
+      allCells[31],
+      allCells[32],
+      allCells[33],
+      allCells[34],
+    ];
+    const row5 = [
+      allCells[35],
+      allCells[36],
+      allCells[37],
+      allCells[38],
+      allCells[39],
+      allCells[40],
+      allCells[41],
+    ];
+
+    return [row0, row1, row2, row3, row4, row5, topRow];
+  }, [gameIsLive, showScoreboard, allCells]);
 
   // Functions
   const getClassListArray = (cell: any) => {
+    console.log("In getClassLIst Array", { cell });
     const classList = cell.classList;
     return [...classList];
   };
@@ -223,6 +227,44 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     if (cells.length < 4) return false;
 
     setGameIsLive(false);
+
+    let playerWinner = localStorage.getItem(`player ${currentPlayerNumber}`);
+
+    if (playerWinner) {
+      setWinner(JSON.parse(playerWinner));
+    } else {
+      setWinner(players[currentPlayerNumber - 1]);
+    }
+
+    // setGameEnded(true);
+
+    let time = document.getElementById("count_up_timer")?.innerText;
+
+    let scoreBoard = localStorage.getItem("scoreboard");
+
+    console.log({ playerWinner, winner, scoreBoard });
+
+    if (scoreBoard) {
+      let parsed = JSON.parse(scoreBoard);
+      if (parsed?.length) {
+        parsed.push({
+          nickname: players[currentPlayerNumber - 1]?.nickname,
+          score: score,
+          duration: time,
+        });
+      }
+      localStorage.setItem(`scoreboard`, JSON.stringify(parsed));
+    } else {
+      const data = [
+        {
+          nickname: players[currentPlayerNumber - 1]?.nickname,
+          score: score,
+          duration: time,
+        },
+      ];
+      localStorage.setItem(`scoreboard`, JSON.stringify(data));
+    }
+
     for (const cell of cells) {
       cell.classList.add("win");
     }
@@ -231,6 +273,14 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       statusSpan.textContent = `${players[
         currentPlayerNumber
       ]?.color.toUpperCase()} has won!`;
+    }
+
+    if (initialPlayerNumber == 1) {
+      setInitialPlayerNumber(2);
+      setCurrentPlayerNumber(2);
+    } else if (initialPlayerNumber == 2) {
+      setInitialPlayerNumber(1);
+      setCurrentPlayerNumber(1);
     }
 
     return true;
@@ -369,80 +419,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     }
   };
 
-  //   // Event Handlers
-  //   const handleCellMouseOver = (e: any) => {
-  //     if (!gameIsLive) return;
-  //     const cell = e.target;
-  //     const [rowIndex, colIndex] = getCellLocation(cell);
-
-  //     const topCell = topCells[colIndex];
-  //     topCell.classList.add(yellowIsNext ? "yellow" : "red");
-  //   };
-
-  //   const handleCellMouseOut = (e: any) => {
-  //     const cell = e.target;
-  //     const [rowIndex, colIndex] = getCellLocation(cell);
-  //     clearColorFromTop(colIndex);
-  //   };
-
-  //   const addPiece = (columnIdx: any) => {
-  //     const column = gameState[columnIdx];
-  //     const piecePos = column.indexOf(null);
-  //     column[piecePos] = currentPlayer;
-
-  //     setGameState({
-  //       ...gameState,
-  //       [columnIdx]: column,
-  //     });
-
-  //     // game over?
-  //     if (gameOver(currentPlayer)) {
-  //       let playerWinner = localStorage.getItem(`player ${currentPlayerNumber}`);
-
-  //       if (playerWinner) {
-  //         setWinner(JSON.parse(playerWinner));
-  //       } else {
-  //         setWinner(players[currentPlayerNumber - 1]);
-  //       }
-
-  //       setGameEnded(true);
-
-  //       let time = document.getElementById("count_up_timer")?.innerText;
-
-  //       let scoreBoard = localStorage.getItem("scoreboard");
-
-  //       if (scoreBoard) {
-  //         let parsed = JSON.parse(scoreBoard);
-  //         if (parsed?.length) {
-  //           parsed.push({
-  //             nickname: players[currentPlayerNumber - 1]?.nickname,
-  //             score: score,
-  //             duration: time,
-  //           });
-  //         }
-  //         localStorage.setItem(`scoreboard`, JSON.stringify(parsed));
-  //       } else {
-  //         const data = [
-  //           {
-  //             nickname: players[currentPlayerNumber - 1]?.nickname,
-  //             score: score,
-  //             duration: time,
-  //           },
-  //         ];
-  //         localStorage.setItem(`scoreboard`, JSON.stringify(data));
-  //       }
-  //     } else if (!gameOver(currentPlayer)) {
-  //       setScore(score + 1);
-
-  //       // Extra verbose due to inconsistent flashing
-  //       if (currentPlayerNumber === 1) {
-  //         setCurrentPlayerNumber(2);
-  //       } else if (currentPlayerNumber === 2) {
-  //         setCurrentPlayerNumber(1);
-  //       }
-  //     }
-  //   };
-
   const handleCellClick = (e: any) => {
     if (!gameIsLive) return;
     const cell = e.target;
@@ -451,6 +427,8 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     const openCell = getFirstOpenCellForColumn(colIndex);
 
     if (!openCell) return;
+
+    setScore(score + 1);
 
     openCell.classList.add(yellowIsNext ? "yellow" : "red");
     checkStatusOfGame(openCell);
@@ -464,158 +442,191 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
 
     setYellowIsNext(!yellowIsNext);
     // yellowIsNext = !yellowIsNext;
-    clearColorFromTop(colIndex);
+    // clearColorFromTop(colIndex);
     // if (gameIsLive) {
     //   const topCell = topCells[colIndex];
     //   topCell.classList.add(yellowIsNext ? "yellow" : "red");
     // }
   };
 
-  //   // Adding Event Listeners
-  //   for (const row of rows) {
-  //     for (const cell of row) {
-  //       cell.addEventListener("mouseover", handleCellMouseOver);
-  //       cell.addEventListener("mouseout", handleCellMouseOut);
-  //       cell.addEventListener("click", handleCellClick);
-  //     }
-  //   }
+  const startNewGame = () => {
+    // // Alternates starting player
+    // if (initialPlayerNumber == 1) {
+    //   setInitialPlayerNumber(2);
+    //   setCurrentPlayerNumber(2);
+    // } else if (initialPlayerNumber == 2) {
+    //   setInitialPlayerNumber(1);
+    //   setCurrentPlayerNumber(1);
+    // }
 
-  //   if (resetButton) {
-  //     resetButton.addEventListener("click", () => {
-  //       for (const row of rows) {
-  //         for (const cell of row) {
-  //           cell.classList.remove("red");
-  //           cell.classList.remove("yellow");
-  //           cell.classList.remove("win");
-  //         }
-  //       }
-  //       gameIsLive = true;
-  //       yellowIsNext = true;
+    for (const row of rows) {
+      for (const cell of row) {
+        console.log("IN REMOVE", { cell, row });
 
-  //       if (statusSpan) {
-  //         statusSpan.textContent = "";
-  //       }
-  //     });
-  //   }
+        cell.classList.remove("red");
+        cell.classList.remove("yellow");
+        cell.classList.remove("win");
+      }
+    }
+
+    setGameIsLive(true);
+    setScore(1);
+
+    !!showScoreboard && setShowScoreboard(false);
+  };
+
+  const renderScoreboard = () => {
+    setShowScoreboard(true);
+  };
 
   return (
-    <div className="game-board">
-      <div className="cell row-top col-0" onClick={handleCellClick}></div>
-      <div className="cell row-top col-1" onClick={handleCellClick}></div>
-      <div className="cell row-top col-2" onClick={handleCellClick}></div>
-      <div className="cell row-top col-3" onClick={handleCellClick}></div>
-      <div className="cell row-top col-4" onClick={handleCellClick}></div>
-      <div className="cell row-top col-5" onClick={handleCellClick}></div>
-      <div className="cell row-top col-6" onClick={handleCellClick}></div>
-      <div
-        className="cell row-0 col-0 left-border top-border"
-        onClick={handleCellClick}
-      ></div>
-      <div
-        className="cell row-0 col-1 top-border"
-        onClick={handleCellClick}
-      ></div>
-      <div
-        className="cell row-0 col-2 top-border"
-        onClick={handleCellClick}
-      ></div>
-      <div
-        className="cell row-0 col-3 top-border"
-        onClick={handleCellClick}
-      ></div>
-      <div
-        className="cell row-0 col-4 top-border"
-        onClick={handleCellClick}
-      ></div>
-      <div
-        className="cell row-0 col-5 top-border"
-        onClick={handleCellClick}
-      ></div>
-      <div
-        className="cell row-0 col-6 top-border right-border"
-        onClick={handleCellClick}
-      ></div>
-      <div
-        className="cell row-1 col-0 left-border"
-        onClick={handleCellClick}
-      ></div>
-      <div className="cell row-1 col-1" onClick={handleCellClick}></div>
-      <div className="cell row-1 col-2" onClick={handleCellClick}></div>
-      <div className="cell row-1 col-3" onClick={handleCellClick}></div>
-      <div className="cell row-1 col-4" onClick={handleCellClick}></div>
-      <div className="cell row-1 col-5" onClick={handleCellClick}></div>
-      <div
-        className="cell row-1 col-6 right-border"
-        onClick={handleCellClick}
-      ></div>
-      <div
-        className="cell row-2 col-0 left-border"
-        onClick={handleCellClick}
-      ></div>
-      <div className="cell row-2 col-1" onClick={handleCellClick}></div>
-      <div className="cell row-2 col-2" onClick={handleCellClick}></div>
-      <div className="cell row-2 col-3" onClick={handleCellClick}></div>
-      <div className="cell row-2 col-4" onClick={handleCellClick}></div>
-      <div className="cell row-2 col-5" onClick={handleCellClick}></div>
-      <div
-        className="cell row-2 col-6 right-border"
-        onClick={handleCellClick}
-      ></div>
-      <div
-        className="cell row-3 col-0 left-border"
-        onClick={handleCellClick}
-      ></div>
-      <div className="cell row-3 col-1" onClick={handleCellClick}></div>
-      <div className="cell row-3 col-2" onClick={handleCellClick}></div>
-      <div className="cell row-3 col-3" onClick={handleCellClick}></div>
-      <div className="cell row-3 col-4" onClick={handleCellClick}></div>
-      <div className="cell row-3 col-5" onClick={handleCellClick}></div>
-      <div
-        className="cell row-3 col-6 right-border"
-        onClick={handleCellClick}
-      ></div>
-      <div
-        className="cell row-4 col-0 left-border"
-        onClick={handleCellClick}
-      ></div>
-      <div className="cell row-4 col-1" onClick={handleCellClick}></div>
-      <div className="cell row-4 col-2" onClick={handleCellClick}></div>
-      <div className="cell row-4 col-3" onClick={handleCellClick}></div>
-      <div className="cell row-4 col-4" onClick={handleCellClick}></div>
-      <div className="cell row-4 col-5" onClick={handleCellClick}></div>
-      <div
-        className="cell row-4 col-6 right-border"
-        onClick={handleCellClick}
-      ></div>
+    <div>
+      {!gameIsLive && showScoreboard && (
+        <div>
+          <button onClick={startNewGame}>Start New Game</button>
+          <ScoreBoard />
+        </div>
+      )}
 
-      <div
-        className="cell row-5 col-0 bottom-border left-border"
-        onClick={handleCellClick}
-      ></div>
-      <div
-        className="cell row-5 col-1 bottom-border"
-        onClick={handleCellClick}
-      ></div>
-      <div
-        className="cell row-5 col-2 bottom-border"
-        onClick={handleCellClick}
-      ></div>
-      <div
-        className="cell row-5 col-3 bottom-border"
-        onClick={handleCellClick}
-      ></div>
-      <div
-        className="cell row-5 col-4 bottom-border"
-        onClick={handleCellClick}
-      ></div>
-      <div
-        className="cell row-5 col-5 bottom-border"
-        onClick={handleCellClick}
-      ></div>
-      <div
-        className="cell row-5 col-6 bottom-border right-border"
-        onClick={handleCellClick}
-      ></div>
+      <div>
+        {!gameIsLive && !showScoreboard && (
+          <div>
+            Game Has Ended
+            <div>{winner && <h2>{winner?.nickname} is the winner</h2>}</div>
+            <div>
+              <h3>Score: {score}</h3>
+
+              <button onClick={startNewGame}>Start a new game</button>
+              <button onClick={renderScoreboard}>Go to the score board</button>
+            </div>
+          </div>
+        )}
+
+        {gameIsLive && (
+          <h4>
+            <span>Score:</span> {score}
+          </h4>
+        )}
+
+        <div className="game-board">
+          <div className="cell row-top col-0" onClick={handleCellClick}></div>
+          <div className="cell row-top col-1" onClick={handleCellClick}></div>
+          <div className="cell row-top col-2" onClick={handleCellClick}></div>
+          <div className="cell row-top col-3" onClick={handleCellClick}></div>
+          <div className="cell row-top col-4" onClick={handleCellClick}></div>
+          <div className="cell row-top col-5" onClick={handleCellClick}></div>
+          <div className="cell row-top col-6" onClick={handleCellClick}></div>
+          <div
+            className="cell row-0 col-0 left-border top-border"
+            onClick={handleCellClick}
+          ></div>
+          <div
+            className="cell row-0 col-1 top-border"
+            onClick={handleCellClick}
+          ></div>
+          <div
+            className="cell row-0 col-2 top-border"
+            onClick={handleCellClick}
+          ></div>
+          <div
+            className="cell row-0 col-3 top-border"
+            onClick={handleCellClick}
+          ></div>
+          <div
+            className="cell row-0 col-4 top-border"
+            onClick={handleCellClick}
+          ></div>
+          <div
+            className="cell row-0 col-5 top-border"
+            onClick={handleCellClick}
+          ></div>
+          <div
+            className="cell row-0 col-6 top-border right-border"
+            onClick={handleCellClick}
+          ></div>
+          <div
+            className="cell row-1 col-0 left-border"
+            onClick={handleCellClick}
+          ></div>
+          <div className="cell row-1 col-1" onClick={handleCellClick}></div>
+          <div className="cell row-1 col-2" onClick={handleCellClick}></div>
+          <div className="cell row-1 col-3" onClick={handleCellClick}></div>
+          <div className="cell row-1 col-4" onClick={handleCellClick}></div>
+          <div className="cell row-1 col-5" onClick={handleCellClick}></div>
+          <div
+            className="cell row-1 col-6 right-border"
+            onClick={handleCellClick}
+          ></div>
+          <div
+            className="cell row-2 col-0 left-border"
+            onClick={handleCellClick}
+          ></div>
+          <div className="cell row-2 col-1" onClick={handleCellClick}></div>
+          <div className="cell row-2 col-2" onClick={handleCellClick}></div>
+          <div className="cell row-2 col-3" onClick={handleCellClick}></div>
+          <div className="cell row-2 col-4" onClick={handleCellClick}></div>
+          <div className="cell row-2 col-5" onClick={handleCellClick}></div>
+          <div
+            className="cell row-2 col-6 right-border"
+            onClick={handleCellClick}
+          ></div>
+          <div
+            className="cell row-3 col-0 left-border"
+            onClick={handleCellClick}
+          ></div>
+          <div className="cell row-3 col-1" onClick={handleCellClick}></div>
+          <div className="cell row-3 col-2" onClick={handleCellClick}></div>
+          <div className="cell row-3 col-3" onClick={handleCellClick}></div>
+          <div className="cell row-3 col-4" onClick={handleCellClick}></div>
+          <div className="cell row-3 col-5" onClick={handleCellClick}></div>
+          <div
+            className="cell row-3 col-6 right-border"
+            onClick={handleCellClick}
+          ></div>
+          <div
+            className="cell row-4 col-0 left-border"
+            onClick={handleCellClick}
+          ></div>
+          <div className="cell row-4 col-1" onClick={handleCellClick}></div>
+          <div className="cell row-4 col-2" onClick={handleCellClick}></div>
+          <div className="cell row-4 col-3" onClick={handleCellClick}></div>
+          <div className="cell row-4 col-4" onClick={handleCellClick}></div>
+          <div className="cell row-4 col-5" onClick={handleCellClick}></div>
+          <div
+            className="cell row-4 col-6 right-border"
+            onClick={handleCellClick}
+          ></div>
+
+          <div
+            className="cell row-5 col-0 bottom-border left-border"
+            onClick={handleCellClick}
+          ></div>
+          <div
+            className="cell row-5 col-1 bottom-border"
+            onClick={handleCellClick}
+          ></div>
+          <div
+            className="cell row-5 col-2 bottom-border"
+            onClick={handleCellClick}
+          ></div>
+          <div
+            className="cell row-5 col-3 bottom-border"
+            onClick={handleCellClick}
+          ></div>
+          <div
+            className="cell row-5 col-4 bottom-border"
+            onClick={handleCellClick}
+          ></div>
+          <div
+            className="cell row-5 col-5 bottom-border"
+            onClick={handleCellClick}
+          ></div>
+          <div
+            className="cell row-5 col-6 bottom-border right-border"
+            onClick={handleCellClick}
+          ></div>
+        </div>
+      </div>
     </div>
   );
 };

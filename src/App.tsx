@@ -10,7 +10,7 @@ export interface Player {
   nickname: string;
   age: number;
   piece: string;
-  color: string
+  color: string;
 }
 
 function App() {
