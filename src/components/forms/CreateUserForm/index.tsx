@@ -50,7 +50,6 @@ const CreateUserForm = (props: CreateUserFromProps) => {
   };
 
   const changePieceSelection = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("changePieceSelection", evt.target.value);
     if (evt?.target?.value) {
       if (evt.target.value === "🟡") {
         setPiece("🟡");

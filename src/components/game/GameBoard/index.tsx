@@ -77,8 +77,6 @@ const GameBoard = (props: GameBoardProps) => {
           gameState[c + 1][r + 1] == gameState[c + 2][r + 2] &&
           gameState[c + 2][r + 2] == gameState[c + 3][r + 3]
         ) {
-          console.log({ c, r, gameState }, gameState);
-
           return true;
         }
       }
@@ -101,8 +99,7 @@ const GameBoard = (props: GameBoardProps) => {
     return false;
   };
 
-  const addPiece = (columnIdx: any) => {
-    console.log(columnIdx, gameState[columnIdx]);
+  const addPiece = (columnIdx: number) => {
     const column = gameState[columnIdx];
     const piecePos = column.indexOf(null);
     column[piecePos] = currentPlayer;

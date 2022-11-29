@@ -18,6 +18,7 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
   const [yellowIsNext, setYellowIsNext] = useState<null | boolean>();
   const [score, setScore] = useState(1);
   const [showScoreboard, setShowScoreboard] = useState(false);
+  const [isTie, setIsTie] = useState(false);
 
   const [winner, setWinner] = useState<null | {
     nickname: string;
@@ -34,8 +35,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
   }, [players]);
 
   const allCells = document.querySelectorAll(".cell:not(.row-top)");
-  const topCells = document.querySelectorAll(".cell.row-top");
-  const statusSpan = document.querySelector(".status");
 
   const columns = useMemo(() => {
     const column0 = [
@@ -45,7 +44,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       allCells[14],
       allCells[7],
       allCells[0],
-      topCells[0],
     ];
     const column1 = [
       allCells[36],
@@ -54,7 +52,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       allCells[15],
       allCells[8],
       allCells[1],
-      topCells[1],
     ];
     const column2 = [
       allCells[37],
@@ -63,7 +60,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       allCells[16],
       allCells[9],
       allCells[2],
-      topCells[2],
     ];
     const column3 = [
       allCells[38],
@@ -72,7 +68,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       allCells[17],
       allCells[10],
       allCells[3],
-      topCells[3],
     ];
     const column4 = [
       allCells[39],
@@ -81,7 +76,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       allCells[18],
       allCells[11],
       allCells[4],
-      topCells[4],
     ];
     const column5 = [
       allCells[40],
@@ -90,7 +84,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       allCells[19],
       allCells[12],
       allCells[5],
-      topCells[5],
     ];
     const column6 = [
       allCells[41],
@@ -99,23 +92,12 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       allCells[20],
       allCells[13],
       allCells[6],
-      topCells[6],
     ];
 
     return [column0, column1, column2, column3, column4, column5, column6];
   }, [gameIsLive, showScoreboard, allCells]);
 
   const rows = useMemo(() => {
-    // rows
-    const topRow = [
-      topCells[0],
-      topCells[1],
-      topCells[2],
-      topCells[3],
-      topCells[4],
-      topCells[5],
-      topCells[6],
-    ];
     const row0 = [
       allCells[0],
       allCells[1],
@@ -171,7 +153,7 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       allCells[41],
     ];
 
-    return [row0, row1, row2, row3, row4, row5, topRow];
+    return [row0, row1, row2, row3, row4, row5];
   }, [gameIsLive, showScoreboard, allCells]);
 
   // Functions
@@ -207,17 +189,42 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     return null;
   };
 
-  //   const clearColorFromTop = (colIndex: any) => {
-  //     const topCell = topCells[colIndex];
-  //     topCell.classList.remove("yellow");
-  //     topCell.classList.remove("red");
-  //   };
-
   const getColorOfCell = (cell: Element) => {
     const classList = getClassListArray(cell);
     if (classList.includes("yellow")) return "yellow";
     if (classList.includes("red")) return "red";
     return null;
+  };
+
+  const addToScoreboard = (user?: { nickname: string; age: number }) => {
+    let time = document.getElementById("count_up_timer")?.innerText;
+
+    let scoreBoard = localStorage.getItem("scoreboard");
+
+    if (scoreBoard) {
+      let parsed = JSON.parse(scoreBoard);
+      if (parsed?.length) {
+        parsed.push({
+          nickname: user
+            ? user.nickname
+            : players[currentPlayerNumber - 1]?.nickname,
+          score: score,
+          duration: time,
+        });
+      }
+      localStorage.setItem(`scoreboard`, JSON.stringify(parsed));
+    } else {
+      const data = [
+        {
+          nickname: user
+            ? user.nickname
+            : players[currentPlayerNumber - 1]?.nickname,
+          score: score,
+          duration: time,
+        },
+      ];
+      localStorage.setItem(`scoreboard`, JSON.stringify(data));
+    }
   };
 
   const checkWinningCells = (cells: Element[]) => {
@@ -233,40 +240,42 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       setWinner(players[currentPlayerNumber - 1]);
     }
 
-    let time = document.getElementById("count_up_timer")?.innerText;
+    addToScoreboard();
 
-    let scoreBoard = localStorage.getItem("scoreboard");
+    // let time = document.getElementById("count_up_timer")?.innerText;
 
-    if (scoreBoard) {
-      let parsed = JSON.parse(scoreBoard);
-      if (parsed?.length) {
-        parsed.push({
-          nickname: players[currentPlayerNumber - 1]?.nickname,
-          score: score,
-          duration: time,
-        });
-      }
-      localStorage.setItem(`scoreboard`, JSON.stringify(parsed));
-    } else {
-      const data = [
-        {
-          nickname: players[currentPlayerNumber - 1]?.nickname,
-          score: score,
-          duration: time,
-        },
-      ];
-      localStorage.setItem(`scoreboard`, JSON.stringify(data));
-    }
+    // let scoreBoard = localStorage.getItem("scoreboard");
+
+    // if (scoreBoard) {
+    //   let parsed = JSON.parse(scoreBoard);
+    //   if (parsed?.length) {
+    //     parsed.push({
+    //       nickname: players[currentPlayerNumber - 1]?.nickname,
+    //       score: score,
+    //       duration: time,
+    //     });
+    //   }
+    //   localStorage.setItem(`scoreboard`, JSON.stringify(parsed));
+    // } else {
+    //   const data = [
+    //     {
+    //       nickname: players[currentPlayerNumber - 1]?.nickname,
+    //       score: score,
+    //       duration: time,
+    //     },
+    //   ];
+    //   localStorage.setItem(`scoreboard`, JSON.stringify(data));
+    // }
 
     for (const cell of cells) {
       cell.classList.add("win");
     }
 
-    if (statusSpan) {
-      statusSpan.textContent = `${players[
-        currentPlayerNumber
-      ]?.color.toUpperCase()} has won!`;
-    }
+    // if (statusSpan) {
+    //   statusSpan.textContent = `${players[
+    //     currentPlayerNumber
+    //   ]?.nickname.toUpperCase()} has won!`;
+    // }
 
     if (initialPlayerNumber == 1) {
       setInitialPlayerNumber(2);
@@ -392,6 +401,7 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
         break;
       }
     }
+
     isWinningCombo = checkWinningCells(winningCells);
     if (isWinningCombo) return;
 
@@ -406,11 +416,21 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       }
     }
 
+    setIsTie(true);
     setGameIsLive(false);
-    if (statusSpan) {
-      statusSpan.textContent = "Game is a tie!";
-    }
+
+    // if (statusSpan) {
+    //   statusSpan.textContent = "Game is a tie!";
+    // }
   };
+
+  useEffect(() => {
+    // Accounts for ties being last case in larger function above/after check
+    if (isTie) {
+      setWinner({ nickname: "Stalemate", age: 0 });
+      addToScoreboard({ nickname: "Stalemate", age: 0 });
+    }
+  }, [isTie]);
 
   const handleCellClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
     if (!gameIsLive) return;
@@ -455,6 +475,7 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       }
     }
 
+    setIsTie(false);
     setGameIsLive(true);
     setScore(1);
 
@@ -468,7 +489,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
   //TODO: Improve from setInterval to something more robust
   setInterval(countUpTimer, 1000);
   let totalSeconds = 0;
-  const [duration, setDuration] = useState("");
 
   function countUpTimer() {
     ++totalSeconds;
@@ -497,9 +517,12 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
         {!gameIsLive && !showScoreboard && (
           <div>
             Game Has Ended
-            <div>{winner && <h2>{winner?.nickname} is the winner</h2>}</div>
             <div>
-              <h3>Score: {score}</h3>
+              {!!winner && !isTie && <h2>{winner?.nickname} is the winner</h2>}
+              {!!winner && isTie && <h2>{winner?.nickname}</h2>}
+            </div>
+            <div>
+              <h3>Score: {score - 1}</h3>
 
               <button onClick={startNewGame}>Start a new game</button>
               <button onClick={renderScoreboard}>Go to the score board</button>
@@ -514,13 +537,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
         )}
 
         <div className="game-board">
-          <div className="cell row-top col-0" onClick={handleCellClick}></div>
-          <div className="cell row-top col-1" onClick={handleCellClick}></div>
-          <div className="cell row-top col-2" onClick={handleCellClick}></div>
-          <div className="cell row-top col-3" onClick={handleCellClick}></div>
-          <div className="cell row-top col-4" onClick={handleCellClick}></div>
-          <div className="cell row-top col-5" onClick={handleCellClick}></div>
-          <div className="cell row-top col-6" onClick={handleCellClick}></div>
           <div
             className="cell row-0 col-0 left-border top-border"
             onClick={handleCellClick}

@@ -36,7 +36,6 @@ function App() {
       randomizeInitialPlayer(fetchedPlayers);
       setGameStarted(true);
     } else if (player1 && !player2) {
-      console.log("ONLY PLAYER 1 COnditional", JSON.parse(player1));
       setCurrentPlayerNumber(2);
     }
   };

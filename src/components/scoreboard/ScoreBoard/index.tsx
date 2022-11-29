@@ -29,7 +29,7 @@ const ScoreBoard = () => {
           <div className="score-row">
             <h3>Game: {idx}</h3>
             <h3>
-              <span>User:</span> <span>{score.nickname}</span>
+              <span>Winner:</span> <span>{score.nickname}</span>
             </h3>
             <h3>
               <span>Moves:</span> <span> {score.score}</span>
