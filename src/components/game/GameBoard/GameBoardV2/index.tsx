@@ -25,7 +25,7 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
   }>(null);
 
   useEffect(() => {
-    console.log("In USE EFFECT", players[currentPlayerNumber - 1].color);
+    // Sets initial value of pieces being used in connection with user choice.
     if (players[currentPlayerNumber - 1].color === "yellow") {
       setYellowIsNext(true);
     } else {
@@ -33,10 +33,8 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     }
   }, [players]);
 
-  // DOM Elements
   const allCells = document.querySelectorAll(".cell:not(.row-top)");
   const topCells = document.querySelectorAll(".cell.row-top");
-  const resetButton = document.querySelector(".reset");
   const statusSpan = document.querySelector(".status");
 
   const columns = useMemo(() => {
@@ -178,7 +176,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
 
   // Functions
   const getClassListArray = (cell: any) => {
-    console.log("In getClassLIst Array", { cell });
     const classList = cell.classList;
     return [...classList];
   };
@@ -210,11 +207,11 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     return null;
   };
 
-  const clearColorFromTop = (colIndex: any) => {
-    const topCell = topCells[colIndex];
-    topCell.classList.remove("yellow");
-    topCell.classList.remove("red");
-  };
+  //   const clearColorFromTop = (colIndex: any) => {
+  //     const topCell = topCells[colIndex];
+  //     topCell.classList.remove("yellow");
+  //     topCell.classList.remove("red");
+  //   };
 
   const getColorOfCell = (cell: any) => {
     const classList = getClassListArray(cell);
@@ -236,13 +233,9 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       setWinner(players[currentPlayerNumber - 1]);
     }
 
-    // setGameEnded(true);
-
     let time = document.getElementById("count_up_timer")?.innerText;
 
     let scoreBoard = localStorage.getItem("scoreboard");
-
-    console.log({ playerWinner, winner, scoreBoard });
 
     if (scoreBoard) {
       let parsed = JSON.parse(scoreBoard);
@@ -441,12 +434,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     }
 
     setYellowIsNext(!yellowIsNext);
-    // yellowIsNext = !yellowIsNext;
-    // clearColorFromTop(colIndex);
-    // if (gameIsLive) {
-    //   const topCell = topCells[colIndex];
-    //   topCell.classList.add(yellowIsNext ? "yellow" : "red");
-    // }
   };
 
   const startNewGame = () => {
@@ -459,10 +446,9 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     //   setCurrentPlayerNumber(1);
     // }
 
+    // Clears cells to start new game
     for (const row of rows) {
       for (const cell of row) {
-        console.log("IN REMOVE", { cell, row });
-
         cell.classList.remove("red");
         cell.classList.remove("yellow");
         cell.classList.remove("win");
