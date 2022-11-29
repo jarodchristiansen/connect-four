@@ -36,9 +36,11 @@ const CreateUserForm = (props: CreateUserFromProps) => {
     localStorage.setItem(`player ${currentPlayerNumber}`, JSON.stringify(data));
 
     if (isPlayerOne) {
+      piece === "🟡" ? setPiece("🔴") : setPiece("🟡");
+      color === "red" ? setColor("yellow") : setColor("red");
+
       setCurrentPlayerNumber(2);
       // Sets second user piece automatically based on what previous user selection
-      piece === "🟡" ? setPiece("🔴") : setPiece("🟡");
     } else {
       startGame();
     }
@@ -54,8 +56,8 @@ const CreateUserForm = (props: CreateUserFromProps) => {
         setPiece("🟡");
         setColor("yellow");
       } else if (evt.target.value === "🔴") {
-        setPiece("🔴");
         setColor("red");
+        setPiece("🔴");
       }
     }
   };

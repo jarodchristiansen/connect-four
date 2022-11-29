@@ -16,7 +16,8 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
   const [yellowIsNext, setYellowIsNext] = useState<null | boolean>();
 
   useEffect(() => {
-    if (players[currentPlayerNumber - 1].color !== "yellow") {
+    console.log("In USE EFFECT", players[currentPlayerNumber - 1].color);
+    if (players[currentPlayerNumber - 1].color === "yellow") {
       setYellowIsNext(true);
     } else {
       setYellowIsNext(false);
