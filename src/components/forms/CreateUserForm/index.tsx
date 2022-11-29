@@ -13,6 +13,7 @@ const CreateUserForm = (props: CreateUserFromProps) => {
   const [nicknameValue, setNicknameValue] = useState("");
   const [age, setAge] = useState(0);
   const [piece, setPiece] = useState("");
+  const [color, setColor] = useState("");
 
   const isPlayerOne = currentPlayerNumber === 1;
 
@@ -29,6 +30,7 @@ const CreateUserForm = (props: CreateUserFromProps) => {
       nickname: nicknameValue,
       age,
       piece,
+      color,
     };
 
     localStorage.setItem(`player ${currentPlayerNumber}`, JSON.stringify(data));
@@ -48,7 +50,13 @@ const CreateUserForm = (props: CreateUserFromProps) => {
   const changePieceSelection = (evt: any) => {
     console.log("changePieceSelection", evt.target.value);
     if (evt?.target?.value) {
-      setPiece(evt.target.value);
+      if (evt.target.value === "🟡") {
+        setPiece("🟡");
+        setColor("yellow");
+      } else if (evt.target.value === "🔴") {
+        setPiece("🔴");
+        setColor("red");
+      }
     }
   };
 

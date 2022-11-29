@@ -10,6 +10,7 @@ export interface Player {
   nickname: string;
   age: number;
   piece: string;
+  color: string
 }
 
 function App() {
@@ -75,7 +76,7 @@ function App() {
           /> */}
 
           <GameBoardV2
-            // players={players}
+            players={players}
             currentPlayerNumber={currentPlayerNumber}
             setCurrentPlayerNumber={(evt: any) => setCurrentPlayerNumber(evt)}
           />

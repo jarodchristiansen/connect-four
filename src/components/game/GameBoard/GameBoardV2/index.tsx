@@ -1,16 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Player } from "../../../../App";
 import "./index.scss";
 
 interface GameBoardV2Props {
+  players: Player[];
   currentPlayerNumber: number;
   setCurrentPlayerNumber: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const GameBoardV2 = (props: GameBoardV2Props) => {
-  const { currentPlayerNumber, setCurrentPlayerNumber } = props;
+  const { currentPlayerNumber, setCurrentPlayerNumber, players } = props;
   const [initialPlayerNumber, setInitialPlayerNumber] =
     useState(currentPlayerNumber);
   const [gameIsLive, setGameIsLive] = useState(true);
+  const [yellowIsNext, setYellowIsNext] = useState<null | boolean>();
+
+  useEffect(() => {
+    if (players[currentPlayerNumber - 1].color !== "yellow") {
+      setYellowIsNext(true);
+    } else {
+      setYellowIsNext(false);
+    }
+  }, [players]);
 
   // DOM Elements
   const allCells = document.querySelectorAll(".cell:not(.row-top)");
@@ -159,7 +170,7 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
   const rows = [row0, row1, row2, row3, row4, row5, topRow];
 
   // variables
-  let yellowIsNext = true;
+  //   let yellowIsNext = true;
 
   // Functions
   const getClassListArray = (cell: any) => {
@@ -216,7 +227,9 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     }
 
     if (statusSpan) {
-      statusSpan.textContent = `${yellowIsNext ? "Yellow" : "Red"} has won!`;
+      statusSpan.textContent = `${players[
+        currentPlayerNumber
+      ]?.color.toUpperCase()} has won!`;
     }
 
     return true;
@@ -355,21 +368,21 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     }
   };
 
-  // Event Handlers
-  const handleCellMouseOver = (e: any) => {
-    if (!gameIsLive) return;
-    const cell = e.target;
-    const [rowIndex, colIndex] = getCellLocation(cell);
+  //   // Event Handlers
+  //   const handleCellMouseOver = (e: any) => {
+  //     if (!gameIsLive) return;
+  //     const cell = e.target;
+  //     const [rowIndex, colIndex] = getCellLocation(cell);
 
-    const topCell = topCells[colIndex];
-    topCell.classList.add(yellowIsNext ? "yellow" : "red");
-  };
+  //     const topCell = topCells[colIndex];
+  //     topCell.classList.add(yellowIsNext ? "yellow" : "red");
+  //   };
 
-  const handleCellMouseOut = (e: any) => {
-    const cell = e.target;
-    const [rowIndex, colIndex] = getCellLocation(cell);
-    clearColorFromTop(colIndex);
-  };
+  //   const handleCellMouseOut = (e: any) => {
+  //     const cell = e.target;
+  //     const [rowIndex, colIndex] = getCellLocation(cell);
+  //     clearColorFromTop(colIndex);
+  //   };
 
   //   const addPiece = (columnIdx: any) => {
   //     const column = gameState[columnIdx];
@@ -441,7 +454,15 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     openCell.classList.add(yellowIsNext ? "yellow" : "red");
     checkStatusOfGame(openCell);
 
-    yellowIsNext = !yellowIsNext;
+    // Extra verbose due to inconsistent flashing
+    if (currentPlayerNumber === 1) {
+      setCurrentPlayerNumber(2);
+    } else if (currentPlayerNumber === 2) {
+      setCurrentPlayerNumber(1);
+    }
+
+    setYellowIsNext(!yellowIsNext);
+    // yellowIsNext = !yellowIsNext;
     clearColorFromTop(colIndex);
     // if (gameIsLive) {
     //   const topCell = topCells[colIndex];
