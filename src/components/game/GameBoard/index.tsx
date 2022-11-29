@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Player } from "../../../App";
 import ScoreBoard from "../../scoreboard/ScoreBoard";
 import GameColumn from "./GameColumn";
@@ -12,6 +12,8 @@ interface GameBoardProps {
 
 const GameBoard = (props: GameBoardProps) => {
   const { currentPlayerNumber, setCurrentPlayerNumber, players } = props;
+  const [initialPlayerNumber, setInitialPlayerNumber] =
+    useState(currentPlayerNumber);
 
   let initial = {} as any;
   for (var c = 0; c < 7; c++) {
@@ -27,6 +29,7 @@ const GameBoard = (props: GameBoardProps) => {
   }>(null);
 
   const [gameEnded, setGameEnded] = useState(false);
+  const [gameDuration, setGameDuration] = useState("");
   const [showScoreboard, setShowScoreboard] = useState(false);
 
   const currentPlayer = useMemo(() => {
@@ -119,6 +122,8 @@ const GameBoard = (props: GameBoardProps) => {
 
       setGameEnded(true);
 
+      let time = document.getElementById("count_up_timer")?.innerText;
+
       let scoreBoard = localStorage.getItem("scoreboard");
 
       if (scoreBoard) {
@@ -127,6 +132,7 @@ const GameBoard = (props: GameBoardProps) => {
           parsed.push({
             nickname: players[currentPlayerNumber - 1]?.nickname,
             score: score,
+            duration: time,
           });
         }
         localStorage.setItem(`scoreboard`, JSON.stringify(parsed));
@@ -135,6 +141,7 @@ const GameBoard = (props: GameBoardProps) => {
           {
             nickname: players[currentPlayerNumber - 1]?.nickname,
             score: score,
+            duration: time,
           },
         ];
         localStorage.setItem(`scoreboard`, JSON.stringify(data));
@@ -149,31 +156,42 @@ const GameBoard = (props: GameBoardProps) => {
         setCurrentPlayerNumber(1);
       }
     }
-
-    // setCurrentPlayer(currentPlayer == X_PIECE ? O_PIECE : X_PIECE);
   };
 
-  //TODO: Integrate timer variable into save data
-  let timerVariable = setInterval(countUpTimer, 1000);
+  //TODO: Improve from setInterval to something more robust
+  setInterval(countUpTimer, 1000);
   let totalSeconds = 0;
+  const [duration, setDuration] = useState("");
 
   function countUpTimer() {
     ++totalSeconds;
     let hour = Math.floor(totalSeconds / 3600);
     let minute = Math.floor((totalSeconds - hour * 3600) / 60);
     let seconds = totalSeconds - (hour * 3600 + minute * 60);
+    let timeString = hour + ":" + minute + ":" + seconds;
 
     let timerDOM = document.getElementById("count_up_timer");
 
     if (timerDOM) {
-      timerDOM.innerHTML = hour + ":" + minute + ":" + seconds;
+      timerDOM.innerHTML = timeString;
     }
   }
 
   const startNewGame = () => {
+    // Alternates starting player
+    if (initialPlayerNumber == 1) {
+      setInitialPlayerNumber(2);
+      setCurrentPlayerNumber(2);
+    } else if (initialPlayerNumber == 2) {
+      setInitialPlayerNumber(1);
+      setCurrentPlayerNumber(1);
+    }
+
     setGameEnded(false);
     setGameState(initial);
     setScore(1);
+
+    !!showScoreboard && setShowScoreboard(false);
   };
 
   const renderScoreboard = () => {
@@ -212,6 +230,7 @@ const GameBoard = (props: GameBoardProps) => {
 
       {showScoreboard && (
         <div>
+          <button onClick={startNewGame}>Start New Game</button>
           <ScoreBoard />
         </div>
       )}
