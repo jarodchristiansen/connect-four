@@ -69,7 +69,7 @@ const GameBoard = (props: GameBoardProps) => {
     }
 
     // Check if there are any four diagonal up to the right
-    for (var c = 0; c < 7; c++) {
+    for (var c = 0; c < 6; c++) {
       for (var r = 0; r < 6; r++) {
         if (
           gameState[c][r] != null &&
@@ -100,7 +100,6 @@ const GameBoard = (props: GameBoardProps) => {
   };
 
   const addPiece = (columnIdx: any) => {
-    console.log(columnIdx, gameState[columnIdx]);
     const column = gameState[columnIdx];
     const piecePos = column.indexOf(null);
     column[piecePos] = currentPlayer;

@@ -4,6 +4,7 @@ import "./App.scss";
 import CreateUserForm from "./components/forms/CreateUserForm";
 import UsernameBanner from "./components/banners/UsernameBanner";
 import GameBoard from "./components/game/GameBoard";
+import GameBoardV2 from "./components/game/GameBoard/GameBoardV2";
 
 export interface Player {
   nickname: string;
@@ -67,8 +68,14 @@ function App() {
             players={players}
             currentPlayerNumber={currentPlayerNumber}
           />
-          <GameBoard
+          {/* <GameBoard
             players={players}
+            currentPlayerNumber={currentPlayerNumber}
+            setCurrentPlayerNumber={(evt: any) => setCurrentPlayerNumber(evt)}
+          /> */}
+
+          <GameBoardV2
+            // players={players}
             currentPlayerNumber={currentPlayerNumber}
             setCurrentPlayerNumber={(evt: any) => setCurrentPlayerNumber(evt)}
           />
