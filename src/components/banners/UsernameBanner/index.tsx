@@ -21,6 +21,11 @@ const UsernameBanner = (props: UsernameBannerProps) => {
           {players[currentPlayerNumber - 1]?.piece}
         </h2>
 
+        <div>
+          <h3>Duration</h3>
+          <h3 id="count_up_timer"></h3>
+        </div>
+
         <div className="row-container">
           <div
             className={`user-name-column ${

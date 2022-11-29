@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Player } from "../../../App";
+import ScoreBoard from "../../scoreboard/ScoreBoard";
 import GameColumn from "./GameColumn";
 import "./index.scss";
 
@@ -18,13 +19,15 @@ const GameBoard = (props: GameBoardProps) => {
   }
 
   const [gameState, setGameState] = useState(initial);
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState(1);
 
   const [winner, setWinner] = useState<null | {
     nickname: string;
     age: number;
   }>(null);
+
   const [gameEnded, setGameEnded] = useState(false);
+  const [showScoreboard, setShowScoreboard] = useState(false);
 
   const currentPlayer = useMemo(() => {
     if (!players) return null;
@@ -115,21 +118,40 @@ const GameBoard = (props: GameBoardProps) => {
       }
 
       setGameEnded(true);
-    }
 
-    setScore(score + 1);
+      let scoreBoard = localStorage.getItem("scoreboard");
 
-    // Extra verbose due to inconsistent flashing
-    if (currentPlayerNumber === 1) {
-      setCurrentPlayerNumber(2);
-    } else if (currentPlayerNumber === 2) {
-      setCurrentPlayerNumber(1);
+      if (scoreBoard) {
+        let parsed = JSON.parse(scoreBoard);
+        if (parsed?.length) {
+          parsed.push({
+            nickname: players[currentPlayerNumber - 1]?.nickname,
+            score: score,
+          });
+        }
+        localStorage.setItem(`scoreboard`, JSON.stringify(parsed));
+      } else {
+        const data = [
+          {
+            nickname: players[currentPlayerNumber - 1]?.nickname,
+            score: score,
+          },
+        ];
+        localStorage.setItem(`scoreboard`, JSON.stringify(data));
+      }
+    } else if (!gameOver(currentPlayer)) {
+      setScore(score + 1);
+
+      // Extra verbose due to inconsistent flashing
+      if (currentPlayerNumber === 1) {
+        setCurrentPlayerNumber(2);
+      } else if (currentPlayerNumber === 2) {
+        setCurrentPlayerNumber(1);
+      }
     }
 
     // setCurrentPlayer(currentPlayer == X_PIECE ? O_PIECE : X_PIECE);
   };
-
-  console.log({ winner });
 
   //TODO: Integrate timer variable into save data
   let timerVariable = setInterval(countUpTimer, 1000);
@@ -137,15 +159,30 @@ const GameBoard = (props: GameBoardProps) => {
 
   function countUpTimer() {
     ++totalSeconds;
-    var hour = Math.floor(totalSeconds / 3600);
-    var minute = Math.floor((totalSeconds - hour * 3600) / 60);
-    var seconds = totalSeconds - (hour * 3600 + minute * 60);
-    // document.getElementById("count_up_timer").innerHTML = hour + ":" + minute + ":" + seconds;
+    let hour = Math.floor(totalSeconds / 3600);
+    let minute = Math.floor((totalSeconds - hour * 3600) / 60);
+    let seconds = totalSeconds - (hour * 3600 + minute * 60);
+
+    let timerDOM = document.getElementById("count_up_timer");
+
+    if (timerDOM) {
+      timerDOM.innerHTML = hour + ":" + minute + ":" + seconds;
+    }
   }
+
+  const startNewGame = () => {
+    setGameEnded(false);
+    setGameState(initial);
+    setScore(1);
+  };
+
+  const renderScoreboard = () => {
+    setShowScoreboard(true);
+  };
 
   return (
     <div>
-      {!gameEnded ? (
+      {!gameEnded && !showScoreboard && (
         <div>
           <div>
             <h4>Score: {score}</h4>
@@ -158,16 +195,24 @@ const GameBoard = (props: GameBoardProps) => {
             })}
           </div>
         </div>
-      ) : (
+      )}
+
+      {gameEnded && !showScoreboard && (
         <div>
           Game Has Ended
           <div>{winner && <h2>{winner?.nickname} is the winner</h2>}</div>
           <div>
             <h3>Score: {score}</h3>
 
-            <button>Start a new game</button>
-            <button>Go to the score board</button>
+            <button onClick={startNewGame}>Start a new game</button>
+            <button onClick={renderScoreboard}>Go to the score board</button>
           </div>
+        </div>
+      )}
+
+      {showScoreboard && (
+        <div>
+          <ScoreBoard />
         </div>
       )}
     </div>
