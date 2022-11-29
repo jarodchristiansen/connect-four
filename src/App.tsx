@@ -31,21 +31,25 @@ function App() {
       let fetchedPlayers = [parsedPlayer1, parsedPlayer2];
 
       setPlayers(fetchedPlayers);
+
+      randomizeInitialPlayer(fetchedPlayers);
+      setGameStarted(true);
     } else if (player1 && !player2) {
       console.log("ONLY PLAYER 1 COnditional", JSON.parse(player1));
       setCurrentPlayerNumber(2);
     }
   };
 
-  useEffect(() => {
-    if (!players?.length) {
+  const randomizeInitialPlayer = (fetchedPlayers: any) => {
+    if (!fetchedPlayers?.length) {
+      // Will set players to have no length/sign up form player 1
       setCurrentPlayerNumber(1);
-    } else if (players.length === 2) {
-      // If game starting picks first user turn at random
+    } else if (fetchedPlayers.length == 2) {
+      // Very first game picks random user on refresh
       let randomizedUser = Math.random() < 0.5 ? 1 : 2;
       setCurrentPlayerNumber(randomizedUser);
     }
-  }, []);
+  };
 
   return (
     <div className="App">
