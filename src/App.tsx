@@ -8,6 +8,7 @@ import GameBoard from "./components/game/GameBoard";
 export interface Player {
   nickname: string;
   age: number;
+  piece: string;
 }
 
 function App() {
@@ -42,10 +43,8 @@ function App() {
       // If game starting picks first user turn at random
       let randomizedUser = Math.random() < 0.5 ? 1 : 2;
       setCurrentPlayerNumber(randomizedUser);
-
-      console.log("THIS IS THE GAME START", { randomizedUser });
     }
-  }, [players]);
+  }, []);
 
   return (
     <div className="App">
@@ -62,8 +61,8 @@ function App() {
             players={players}
             currentPlayerNumber={currentPlayerNumber}
           />
-          This Would Be The Game Time Screen
           <GameBoard
+            players={players}
             currentPlayerNumber={currentPlayerNumber}
             setCurrentPlayerNumber={(evt: any) => setCurrentPlayerNumber(evt)}
           />

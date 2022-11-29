@@ -1,17 +1,16 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { Player } from "../../../App";
 import GameColumn from "./GameColumn";
 import "./index.scss";
 
 interface GameBoardProps {
+  players: Player[];
   currentPlayerNumber: number;
   setCurrentPlayerNumber: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const GameBoard = (props: GameBoardProps) => {
-  const { currentPlayerNumber, setCurrentPlayerNumber } = props;
-
-  const X_PIECE = "🟡";
-  const O_PIECE = "🔴";
+  const { currentPlayerNumber, setCurrentPlayerNumber, players } = props;
 
   let initial = {} as any;
   for (var c = 0; c < 7; c++) {
@@ -21,14 +20,18 @@ const GameBoard = (props: GameBoardProps) => {
   const [gameState, setGameState] = useState(initial);
   const [score, setScore] = useState(0);
 
-  const [winner, setWinner] = useState<null | string>(null);
+  const [winner, setWinner] = useState<null | {
+    nickname: string;
+    age: number;
+  }>(null);
   const [gameEnded, setGameEnded] = useState(false);
 
-  const [currentPlayer, setCurrentPlayer] = useState(
-    currentPlayerNumber == 1 ? X_PIECE : O_PIECE
-  );
+  const currentPlayer = useMemo(() => {
+    if (!players) return null;
+    else return players[currentPlayerNumber - 1]?.piece;
+  }, [currentPlayerNumber]);
 
-  const gameOver = (currentPlayer: any) => {
+  const gameOver = (currentPlayer: null | string) => {
     let column;
 
     // Check if there are any four in a row in a column
@@ -96,8 +99,6 @@ const GameBoard = (props: GameBoardProps) => {
     const piecePos = column.indexOf(null);
     column[piecePos] = currentPlayer;
 
-    console.log({ columnIdx, column, piecePos });
-
     setGameState({
       ...gameState,
       [columnIdx]: column,
@@ -110,27 +111,46 @@ const GameBoard = (props: GameBoardProps) => {
       if (playerWinner) {
         setWinner(JSON.parse(playerWinner));
       } else {
-        setWinner(currentPlayer);
+        setWinner(players[currentPlayerNumber - 1]);
       }
 
       setGameEnded(true);
-
-      console.log("after gameOver", { playerWinner });
     }
 
     setScore(score + 1);
-    setCurrentPlayer(currentPlayer == X_PIECE ? O_PIECE : X_PIECE);
+
+    // Extra verbose due to inconsistent flashing
+    if (currentPlayerNumber === 1) {
+      setCurrentPlayerNumber(2);
+    } else if (currentPlayerNumber === 2) {
+      setCurrentPlayerNumber(1);
+    }
+
+    // setCurrentPlayer(currentPlayer == X_PIECE ? O_PIECE : X_PIECE);
   };
+
+  console.log({ winner });
+
+  //TODO: Integrate timer variable into save data
+  let timerVariable = setInterval(countUpTimer, 1000);
+  let totalSeconds = 0;
+
+  function countUpTimer() {
+    ++totalSeconds;
+    var hour = Math.floor(totalSeconds / 3600);
+    var minute = Math.floor((totalSeconds - hour * 3600) / 60);
+    var seconds = totalSeconds - (hour * 3600 + minute * 60);
+    // document.getElementById("count_up_timer").innerHTML = hour + ":" + minute + ":" + seconds;
+  }
 
   return (
     <div>
-      Thi is the gameBoard {currentPlayer} - {currentPlayerNumber}
       {!gameEnded ? (
         <div>
-          <div>Score: {score}</div>
+          <div>
+            <h4>Score: {score}</h4>
+          </div>
           <div className="board">
-            <div>{winner && <h1>{winner} is the winner</h1>}</div>
-            {/* Current player is {currentPlayer}. */}
             {Object.entries(gameState).map(([k, col], x) => {
               return (
                 <GameColumn col={col} idx={x} onClick={() => addPiece(x)} />
@@ -139,7 +159,16 @@ const GameBoard = (props: GameBoardProps) => {
           </div>
         </div>
       ) : (
-        <div>Game Has Ended</div>
+        <div>
+          Game Has Ended
+          <div>{winner && <h2>{winner?.nickname} is the winner</h2>}</div>
+          <div>
+            <h3>Score: {score}</h3>
+
+            <button>Start a new game</button>
+            <button>Go to the score board</button>
+          </div>
+        </div>
       )}
     </div>
   );

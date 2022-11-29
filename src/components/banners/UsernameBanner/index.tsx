@@ -12,7 +12,14 @@ const UsernameBanner = (props: UsernameBannerProps) => {
   return (
     <div>
       <div className="username-banner-header">
-        <h2>Current User Turn: {players[currentPlayerNumber - 1]?.nickname}</h2>
+        <u>
+          <h2 className="current-turn-header">Current Turn</h2>
+        </u>
+
+        <h2>
+          {players[currentPlayerNumber - 1]?.nickname} -{" "}
+          {players[currentPlayerNumber - 1]?.piece}
+        </h2>
 
         <div className="row-container">
           <div
@@ -20,8 +27,9 @@ const UsernameBanner = (props: UsernameBannerProps) => {
               currentPlayerNumber === 1 && "current-turn"
             }`}
           >
-            <h2>User: {players[0]?.nickname}</h2>
+            <h2>{players[0]?.nickname}</h2>
             <h4>Age: {players[0]?.age}</h4>
+            <h4>Piece: {players[0]?.piece}</h4>
           </div>
 
           <div
@@ -29,8 +37,9 @@ const UsernameBanner = (props: UsernameBannerProps) => {
               currentPlayerNumber === 2 && "current-turn"
             }`}
           >
-            <h2>User: {players[1]?.nickname}</h2>
+            <h2>{players[1]?.nickname}</h2>
             <h4>Age: {players[1]?.age}</h4>
+            <h4>Piece: {players[1]?.piece}</h4>
           </div>
         </div>
       </div>
