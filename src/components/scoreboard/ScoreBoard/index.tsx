@@ -32,7 +32,7 @@ const ScoreBoard = () => {
               <span>User:</span> <span>{score.nickname}</span>
             </h3>
             <h3>
-              <span>Score:</span> <span> {score.score}</span>
+              <span>Moves:</span> <span> {score.score}</span>
             </h3>
 
             {!!score?.duration && (

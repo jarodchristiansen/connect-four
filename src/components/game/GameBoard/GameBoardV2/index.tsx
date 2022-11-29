@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Player } from "../../../../App";
 import ScoreBoard from "../../../scoreboard/ScoreBoard";
 import "./index.scss";
@@ -6,7 +6,7 @@ import "./index.scss";
 interface GameBoardV2Props {
   players: Player[];
   currentPlayerNumber: number;
-  setCurrentPlayerNumber: React.Dispatch<React.SetStateAction<number>>;
+  setCurrentPlayerNumber: (evt: number) => void;
 }
 
 const GameBoardV2 = (props: GameBoardV2Props) => {
@@ -180,7 +180,7 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     return [...classList];
   };
 
-  const getCellLocation = (cell: any) => {
+  const getCellLocation = (cell: EventTarget) => {
     const classList = getClassListArray(cell);
 
     const rowClass = classList.find((className) => className.includes("row"));
@@ -193,7 +193,7 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     return [rowNumber, colNumber];
   };
 
-  const getFirstOpenCellForColumn = (colIndex: any) => {
+  const getFirstOpenCellForColumn = (colIndex: number) => {
     const column = columns[colIndex];
     const columnWithoutTop = column.slice(0, 6);
 
@@ -213,14 +213,14 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
   //     topCell.classList.remove("red");
   //   };
 
-  const getColorOfCell = (cell: any) => {
+  const getColorOfCell = (cell: Element) => {
     const classList = getClassListArray(cell);
     if (classList.includes("yellow")) return "yellow";
     if (classList.includes("red")) return "red";
     return null;
   };
 
-  const checkWinningCells = (cells: any) => {
+  const checkWinningCells = (cells: Element[]) => {
     if (cells.length < 4) return false;
 
     setGameIsLive(false);
@@ -279,7 +279,7 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     return true;
   };
 
-  const checkStatusOfGame = (cell: any) => {
+  const checkStatusOfGame = (cell: Element) => {
     const color = getColorOfCell(cell);
     if (!color) return;
     const [rowIndex, colIndex] = getCellLocation(cell);
@@ -412,7 +412,7 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     }
   };
 
-  const handleCellClick = (e: any) => {
+  const handleCellClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
     if (!gameIsLive) return;
     const cell = e.target;
     const [rowIndex, colIndex] = getCellLocation(cell);
@@ -464,6 +464,25 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
   const renderScoreboard = () => {
     setShowScoreboard(true);
   };
+
+  //TODO: Improve from setInterval to something more robust
+  setInterval(countUpTimer, 1000);
+  let totalSeconds = 0;
+  const [duration, setDuration] = useState("");
+
+  function countUpTimer() {
+    ++totalSeconds;
+    let hour = Math.floor(totalSeconds / 3600);
+    let minute = Math.floor((totalSeconds - hour * 3600) / 60);
+    let seconds = totalSeconds - (hour * 3600 + minute * 60);
+    let timeString = hour + ":" + minute + ":" + seconds;
+
+    let timerDOM = document.getElementById("count_up_timer");
+
+    if (timerDOM) {
+      timerDOM.innerHTML = timeString;
+    }
+  }
 
   return (
     <div>

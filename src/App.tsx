@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import logo from "./logo.svg";
 import "./App.scss";
 import CreateUserForm from "./components/forms/CreateUserForm";
 import UsernameBanner from "./components/banners/UsernameBanner";
@@ -15,7 +14,7 @@ export interface Player {
 
 function App() {
   const [currentPlayerNumber, setCurrentPlayerNumber] = useState(1);
-  const [players, setPlayers] = useState<any[]>([]);
+  const [players, setPlayers] = useState<[] | Player[]>([]);
   const [gameStarted, setGameStarted] = useState(false);
 
   useEffect(() => {
@@ -42,7 +41,7 @@ function App() {
     }
   };
 
-  const randomizeInitialPlayer = (fetchedPlayers: any) => {
+  const randomizeInitialPlayer = (fetchedPlayers: Player[]) => {
     if (!fetchedPlayers?.length) {
       // Will set players to have no length/sign up form player 1
       setCurrentPlayerNumber(1);
@@ -58,7 +57,7 @@ function App() {
       {!players?.length && (
         <CreateUserForm
           currentPlayerNumber={currentPlayerNumber}
-          setCurrentPlayerNumber={(evt: any) => setCurrentPlayerNumber(evt)}
+          setCurrentPlayerNumber={(evt: number) => setCurrentPlayerNumber(evt)}
           startGame={() => setGameStarted(true)}
         />
       )}
@@ -72,13 +71,15 @@ function App() {
           {/* <GameBoard
             players={players}
             currentPlayerNumber={currentPlayerNumber}
-            setCurrentPlayerNumber={(evt: any) => setCurrentPlayerNumber(evt)}
+            setCurrentPlayerNumber={(evt: number) => setCurrentPlayerNumber(evt)}
           /> */}
 
           <GameBoardV2
             players={players}
             currentPlayerNumber={currentPlayerNumber}
-            setCurrentPlayerNumber={(evt: any) => setCurrentPlayerNumber(evt)}
+            setCurrentPlayerNumber={(evt: number) =>
+              setCurrentPlayerNumber(evt)
+            }
           />
         </div>
       )}

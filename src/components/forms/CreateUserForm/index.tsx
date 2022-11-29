@@ -3,7 +3,7 @@ import "./index.scss";
 
 interface CreateUserFromProps {
   currentPlayerNumber: number;
-  setCurrentPlayerNumber: React.Dispatch<React.SetStateAction<number>>;
+  setCurrentPlayerNumber: (evt: number) => void;
   startGame: () => void;
 }
 
@@ -49,7 +49,7 @@ const CreateUserForm = (props: CreateUserFromProps) => {
     setAge(0);
   };
 
-  const changePieceSelection = (evt: any) => {
+  const changePieceSelection = (evt: React.ChangeEvent<HTMLInputElement>) => {
     console.log("changePieceSelection", evt.target.value);
     if (evt?.target?.value) {
       if (evt.target.value === "🟡") {
