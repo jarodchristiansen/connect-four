@@ -10,7 +10,7 @@ const UsernameBanner = (props: UsernameBannerProps) => {
   const { players, currentPlayerNumber } = props;
 
   return (
-    <div>
+    <div className="banner-container">
       <div className="username-banner-header">
         <u>
           <h2 className="current-turn-header">Current Turn</h2>
@@ -21,7 +21,7 @@ const UsernameBanner = (props: UsernameBannerProps) => {
           {players[currentPlayerNumber - 1]?.piece}
         </h2>
 
-        <div>
+        <div className="timer-container">
           <h3>Duration</h3>
           <h3 id="count_up_timer"></h3>
         </div>

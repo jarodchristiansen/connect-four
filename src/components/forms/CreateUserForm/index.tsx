@@ -4,10 +4,11 @@ import "./index.scss";
 interface CreateUserFromProps {
   currentPlayerNumber: number;
   setCurrentPlayerNumber: React.Dispatch<React.SetStateAction<number>>;
+  startGame: () => void;
 }
 
 const CreateUserForm = (props: CreateUserFromProps) => {
-  const { currentPlayerNumber, setCurrentPlayerNumber } = props;
+  const { currentPlayerNumber, setCurrentPlayerNumber, startGame } = props;
 
   const [nicknameValue, setNicknameValue] = useState("");
   const [age, setAge] = useState(0);
@@ -37,7 +38,7 @@ const CreateUserForm = (props: CreateUserFromProps) => {
       // Sets second user piece automatically based on what previous user selection
       piece === "🟡" ? setPiece("🔴") : setPiece("🟡");
     } else {
-      setCurrentPlayerNumber(1);
+      startGame();
     }
 
     setNicknameValue("");
