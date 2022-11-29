@@ -1,14 +1,27 @@
+
+.banner-container {
+    // .timer-container {
+    //    visibility: hidden;
+    // }
+}
+
 .row-container {
     display: flex;
     justify-content: space-between;
-    padding: 1rem 2rem;
+    padding: 0 2rem;
 
     .user-name-column {
         background-color: rgba(128, 128, 128, 0.13);
         padding: 1rem;
+        width: 30%;
+        max-width: 17rem;
     }
 
     .current-turn {
-        border: 2px solid gold;
+        border: 2px solid rgb(0, 255, 34);
+    }
+
+    .username-banner-header {
+        padding: 2rem 0;
     }
 }
