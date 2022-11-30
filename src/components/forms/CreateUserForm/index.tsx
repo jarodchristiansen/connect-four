@@ -32,7 +32,9 @@ const CreateUserForm = (props: CreateUserFromProps) => {
     setAge(parseInt(evt.target.value));
   };
 
-  const submitUserData = () => {
+  const submitUserData = (e: React.FormEvent) => {
+    e.preventDefault();
+
     const data = {
       nickname: nicknameValue,
       age,
@@ -69,7 +71,7 @@ const CreateUserForm = (props: CreateUserFromProps) => {
   };
 
   return (
-    <div className="form-container">
+    <form className="form-container" onSubmit={submitUserData}>
       <h2>Create User - Player {isPlayerOne ? "One" : "Two"}</h2>
 
       <div className="input-container">
@@ -133,10 +135,8 @@ const CreateUserForm = (props: CreateUserFromProps) => {
         </div>
       )}
 
-      <button onClick={submitUserData} className={"submit-button"}>
-        Create User
-      </button>
-    </div>
+      <button className={"submit-button"}>Create User</button>
+    </form>
   );
 };
 

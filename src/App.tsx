@@ -37,9 +37,11 @@ function App() {
 
       setPlayers(fetchedPlayers);
 
+      // randomizes first turn on first game start
       randomizeInitialPlayer(fetchedPlayers);
       setGameStarted(true);
     } else if (player1 && !player2) {
+      // If only 1 player, sets form to 2nd user signup
       setCurrentPlayerNumber(2);
     }
   };

@@ -469,17 +469,20 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     let timerElement = document.getElementById("count_up_timer");
 
     if (timerElement) {
+      // Starts timer if no 'stop' command present
       if (!command) {
         timerElement.innerText = "0";
         let startTime = new Date();
 
         countRef.current = setInterval(() => {
           if (timerElement) {
+            // Uses getTimerTime due to setInterval instability
             timerElement.innerText = getTimerTime(startTime);
           }
         }, 1000);
       }
 
+      // If command is found, stops ref (command used is 'stop')
       if (command) {
         clearInterval(countRef.current);
       }
@@ -487,6 +490,7 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
   }
 
   function getTimerTime(startTime: any) {
+    // Used to resolve setInterval inconsistency, uses absolute time from call/totalSecond calc
     let totalSeconds = Math.floor(((new Date() as any) - startTime) / 1000);
 
     let hour = Math.floor(totalSeconds / 3600);
@@ -534,9 +538,14 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
         )}
 
         {gameIsLive && (
-          <h4>
-            <span>Score:</span> {score}
-          </h4>
+          <>
+            <h4>
+              <span>Score:</span> {score}
+            </h4>
+            {score === 1 && (
+              <span>Click a column to place your first piece</span>
+            )}
+          </>
         )}
 
         <div className="game-board">
