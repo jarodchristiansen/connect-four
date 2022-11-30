@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import "./index.scss";
 
+/**
+ *
+ * @returns Scoreboard component that maintains record of completed games in localstorage to be viewed
+ */
 const ScoreBoard = () => {
   const [scoreData, setScoreData] = useState([]);
 
@@ -27,12 +31,12 @@ const ScoreBoard = () => {
       ) => {
         return (
           <div className="score-row">
-            <h3>Game: {idx}</h3>
+            <h3>Game: {idx + 1}</h3>
             <h3>
-              <span>User:</span> <span>{score.nickname}</span>
+              <span>Winner:</span> <span>{score.nickname}</span>
             </h3>
             <h3>
-              <span>Score:</span> <span> {score.score}</span>
+              <span>Moves:</span> <span> {score.score}</span>
             </h3>
 
             {!!score?.duration && (
@@ -47,7 +51,8 @@ const ScoreBoard = () => {
   }, [scoreData]);
 
   return (
-    <div>
+    <div className="score-container">
+      <h2>Previous Games</h2>
       <div>{scoreList}</div>
     </div>
   );

@@ -1,3 +1,10 @@
+.score-container {
+    max-height: 600px;
+    overflow-y: auto;
+    border: 1px solid black;
+    margin: 1rem 0;
+}
+
 .score-row {
     display: flex;
     justify-content: center;

@@ -1,14 +1,26 @@
-import { useEffect, useMemo, useState } from "react";
-import { Player } from "../../../../App";
-import ScoreBoard from "../../../scoreboard/ScoreBoard";
+import React, { useEffect, useMemo, useState } from "react";
+import { Player } from "../../../App";
+import ScoreBoard from "../../scoreboard/ScoreBoard";
 import "./index.scss";
 
 interface GameBoardV2Props {
   players: Player[];
   currentPlayerNumber: number;
-  setCurrentPlayerNumber: React.Dispatch<React.SetStateAction<number>>;
+  setCurrentPlayerNumber: (evt: number) => void;
 }
 
+export interface User {
+  nickname: string;
+  age: number;
+}
+
+/**
+ *
+ * @property players: List of players entered on create form, pulled from localStorage
+ * @property currentPlayerNumber: Number of player selected at parent, (controls turns/random player start)
+ * @property setCurrentPlayerNumber: controls player turn, allows alternating based on playing
+ * @returns GameBoardV2 component allowing 2 users to compete in connect four (functional component)
+ */
 const GameBoardV2 = (props: GameBoardV2Props) => {
   const { currentPlayerNumber, setCurrentPlayerNumber, players } = props;
   const [initialPlayerNumber, setInitialPlayerNumber] =
@@ -18,11 +30,14 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
   const [yellowIsNext, setYellowIsNext] = useState<null | boolean>();
   const [score, setScore] = useState(1);
   const [showScoreboard, setShowScoreboard] = useState(false);
+  const [isTie, setIsTie] = useState(false);
 
   const [winner, setWinner] = useState<null | {
     nickname: string;
     age: number;
   }>(null);
+
+  const countRef = React.useRef(null as any);
 
   useEffect(() => {
     // Sets initial value of pieces being used in connection with user choice.
@@ -33,9 +48,11 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     }
   }, [players]);
 
+  useEffect(() => {
+    handleTimer();
+  }, []);
+
   const allCells = document.querySelectorAll(".cell:not(.row-top)");
-  const topCells = document.querySelectorAll(".cell.row-top");
-  const statusSpan = document.querySelector(".status");
 
   const columns = useMemo(() => {
     const column0 = [
@@ -45,7 +62,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       allCells[14],
       allCells[7],
       allCells[0],
-      topCells[0],
     ];
     const column1 = [
       allCells[36],
@@ -54,7 +70,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       allCells[15],
       allCells[8],
       allCells[1],
-      topCells[1],
     ];
     const column2 = [
       allCells[37],
@@ -63,7 +78,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       allCells[16],
       allCells[9],
       allCells[2],
-      topCells[2],
     ];
     const column3 = [
       allCells[38],
@@ -72,7 +86,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       allCells[17],
       allCells[10],
       allCells[3],
-      topCells[3],
     ];
     const column4 = [
       allCells[39],
@@ -81,7 +94,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       allCells[18],
       allCells[11],
       allCells[4],
-      topCells[4],
     ];
     const column5 = [
       allCells[40],
@@ -90,7 +102,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       allCells[19],
       allCells[12],
       allCells[5],
-      topCells[5],
     ];
     const column6 = [
       allCells[41],
@@ -99,23 +110,12 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       allCells[20],
       allCells[13],
       allCells[6],
-      topCells[6],
     ];
 
     return [column0, column1, column2, column3, column4, column5, column6];
   }, [gameIsLive, showScoreboard, allCells]);
 
   const rows = useMemo(() => {
-    // rows
-    const topRow = [
-      topCells[0],
-      topCells[1],
-      topCells[2],
-      topCells[3],
-      topCells[4],
-      topCells[5],
-      topCells[6],
-    ];
     const row0 = [
       allCells[0],
       allCells[1],
@@ -171,7 +171,7 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       allCells[41],
     ];
 
-    return [row0, row1, row2, row3, row4, row5, topRow];
+    return [row0, row1, row2, row3, row4, row5];
   }, [gameIsLive, showScoreboard, allCells]);
 
   // Functions
@@ -180,7 +180,7 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     return [...classList];
   };
 
-  const getCellLocation = (cell: any) => {
+  const getCellLocation = (cell: EventTarget) => {
     const classList = getClassListArray(cell);
 
     const rowClass = classList.find((className) => className.includes("row"));
@@ -193,7 +193,7 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     return [rowNumber, colNumber];
   };
 
-  const getFirstOpenCellForColumn = (colIndex: any) => {
+  const getFirstOpenCellForColumn = (colIndex: number) => {
     const column = columns[colIndex];
     const columnWithoutTop = column.slice(0, 6);
 
@@ -207,23 +207,50 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     return null;
   };
 
-  //   const clearColorFromTop = (colIndex: any) => {
-  //     const topCell = topCells[colIndex];
-  //     topCell.classList.remove("yellow");
-  //     topCell.classList.remove("red");
-  //   };
-
-  const getColorOfCell = (cell: any) => {
+  const getColorOfCell = (cell: Element) => {
     const classList = getClassListArray(cell);
     if (classList.includes("yellow")) return "yellow";
     if (classList.includes("red")) return "red";
     return null;
   };
 
-  const checkWinningCells = (cells: any) => {
+  const addToScoreboard = (user?: User) => {
+    let time = document.getElementById("count_up_timer")?.innerText;
+
+    let scoreBoard = localStorage.getItem("scoreboard");
+
+    if (scoreBoard) {
+      let parsed = JSON.parse(scoreBoard);
+      if (parsed?.length) {
+        parsed.push({
+          nickname: user
+            ? user.nickname
+            : players[currentPlayerNumber - 1]?.nickname,
+          score: score,
+          duration: time,
+        });
+      }
+      localStorage.setItem(`scoreboard`, JSON.stringify(parsed));
+    } else {
+      const data = [
+        {
+          nickname: user
+            ? user.nickname
+            : players[currentPlayerNumber - 1]?.nickname,
+          score: score,
+          duration: time,
+        },
+      ];
+      localStorage.setItem(`scoreboard`, JSON.stringify(data));
+    }
+  };
+
+  const checkWinningCells = (cells: Element[]) => {
     if (cells.length < 4) return false;
 
     setGameIsLive(false);
+
+    handleTimer("stop");
 
     let playerWinner = localStorage.getItem(`player ${currentPlayerNumber}`);
 
@@ -233,53 +260,25 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       setWinner(players[currentPlayerNumber - 1]);
     }
 
-    let time = document.getElementById("count_up_timer")?.innerText;
-
-    let scoreBoard = localStorage.getItem("scoreboard");
-
-    if (scoreBoard) {
-      let parsed = JSON.parse(scoreBoard);
-      if (parsed?.length) {
-        parsed.push({
-          nickname: players[currentPlayerNumber - 1]?.nickname,
-          score: score,
-          duration: time,
-        });
-      }
-      localStorage.setItem(`scoreboard`, JSON.stringify(parsed));
-    } else {
-      const data = [
-        {
-          nickname: players[currentPlayerNumber - 1]?.nickname,
-          score: score,
-          duration: time,
-        },
-      ];
-      localStorage.setItem(`scoreboard`, JSON.stringify(data));
-    }
+    addToScoreboard();
 
     for (const cell of cells) {
       cell.classList.add("win");
     }
 
-    if (statusSpan) {
-      statusSpan.textContent = `${players[
-        currentPlayerNumber
-      ]?.color.toUpperCase()} has won!`;
-    }
-
+    // Changes which user starts each game after first is random
     if (initialPlayerNumber == 1) {
-      setInitialPlayerNumber(2);
       setCurrentPlayerNumber(2);
+      setInitialPlayerNumber(2);
     } else if (initialPlayerNumber == 2) {
-      setInitialPlayerNumber(1);
       setCurrentPlayerNumber(1);
+      setInitialPlayerNumber(1);
     }
 
     return true;
   };
 
-  const checkStatusOfGame = (cell: any) => {
+  const checkStatusOfGame = (cell: Element) => {
     const color = getColorOfCell(cell);
     if (!color) return;
     const [rowIndex, colIndex] = getCellLocation(cell);
@@ -392,6 +391,7 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
         break;
       }
     }
+
     isWinningCombo = checkWinningCells(winningCells);
     if (isWinningCombo) return;
 
@@ -406,13 +406,20 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       }
     }
 
+    setIsTie(true);
+    handleTimer("stop");
     setGameIsLive(false);
-    if (statusSpan) {
-      statusSpan.textContent = "Game is a tie!";
-    }
   };
 
-  const handleCellClick = (e: any) => {
+  useEffect(() => {
+    // Accounts for ties being last case in larger function above/after check
+    if (isTie) {
+      setWinner({ nickname: "Stalemate", age: 0 });
+      addToScoreboard({ nickname: "Stalemate", age: 0 });
+    }
+  }, [isTie]);
+
+  const handleCellClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
     if (!gameIsLive) return;
     const cell = e.target;
     const [rowIndex, colIndex] = getCellLocation(cell);
@@ -437,15 +444,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
   };
 
   const startNewGame = () => {
-    // // Alternates starting player
-    // if (initialPlayerNumber == 1) {
-    //   setInitialPlayerNumber(2);
-    //   setCurrentPlayerNumber(2);
-    // } else if (initialPlayerNumber == 2) {
-    //   setInitialPlayerNumber(1);
-    //   setCurrentPlayerNumber(1);
-    // }
-
     // Clears cells to start new game
     for (const row of rows) {
       for (const cell of row) {
@@ -455,6 +453,8 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       }
     }
 
+    setIsTie(false);
+    handleTimer();
     setGameIsLive(true);
     setScore(1);
 
@@ -465,25 +465,70 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     setShowScoreboard(true);
   };
 
+  function handleTimer(command?: string) {
+    let timerElement = document.getElementById("count_up_timer");
+
+    if (timerElement) {
+      if (!command) {
+        timerElement.innerText = "0";
+        let startTime = new Date();
+
+        countRef.current = setInterval(() => {
+          if (timerElement) {
+            timerElement.innerText = getTimerTime(startTime);
+          }
+        }, 1000);
+      }
+
+      if (command) {
+        clearInterval(countRef.current);
+      }
+    }
+  }
+
+  function getTimerTime(startTime: any) {
+    let totalSeconds = Math.floor(((new Date() as any) - startTime) / 1000);
+
+    let hour = Math.floor(totalSeconds / 3600);
+    let minute = Math.floor((totalSeconds - hour * 3600) / 60);
+    let seconds = totalSeconds - (hour * 3600 + minute * 60);
+
+    let timeString = minute + "(m)" + ":" + seconds + "(s)";
+
+    return timeString;
+  }
+
   return (
     <div>
       {!gameIsLive && showScoreboard && (
         <div>
-          <button onClick={startNewGame}>Start New Game</button>
+          <button onClick={startNewGame} className="standardized-button">
+            Start New Game
+          </button>
           <ScoreBoard />
         </div>
       )}
 
       <div>
         {!gameIsLive && !showScoreboard && (
-          <div>
-            Game Has Ended
-            <div>{winner && <h2>{winner?.nickname} is the winner</h2>}</div>
+          <div className="announce-container">
+            <h2>Game Has Ended</h2>
             <div>
-              <h3>Score: {score}</h3>
+              {!!winner && !isTie && <h2>{winner?.nickname} is the winner</h2>}
+              {!!winner && isTie && <h2>{winner?.nickname}</h2>}
 
-              <button onClick={startNewGame}>Start a new game</button>
-              <button onClick={renderScoreboard}>Go to the score board</button>
+              <h3>Score: {score - 1}</h3>
+            </div>
+            <div className="button-container">
+              <button onClick={startNewGame} className="standardized-button">
+                Start a new game
+              </button>
+              <button
+                onClick={renderScoreboard}
+                className="standardized-button"
+              >
+                Go to the score board
+              </button>
             </div>
           </div>
         )}
@@ -495,13 +540,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
         )}
 
         <div className="game-board">
-          <div className="cell row-top col-0" onClick={handleCellClick}></div>
-          <div className="cell row-top col-1" onClick={handleCellClick}></div>
-          <div className="cell row-top col-2" onClick={handleCellClick}></div>
-          <div className="cell row-top col-3" onClick={handleCellClick}></div>
-          <div className="cell row-top col-4" onClick={handleCellClick}></div>
-          <div className="cell row-top col-5" onClick={handleCellClick}></div>
-          <div className="cell row-top col-6" onClick={handleCellClick}></div>
           <div
             className="cell row-0 col-0 left-border top-border"
             onClick={handleCellClick}

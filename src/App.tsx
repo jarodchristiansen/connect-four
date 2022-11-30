@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import logo from "./logo.svg";
 import "./App.scss";
 import CreateUserForm from "./components/forms/CreateUserForm";
 import UsernameBanner from "./components/banners/UsernameBanner";
 import GameBoard from "./components/game/GameBoard";
-import GameBoardV2 from "./components/game/GameBoard/GameBoardV2";
+import GameBoardV2 from "./components/game/GameBoardV2";
 
 export interface Player {
   nickname: string;
@@ -13,9 +12,13 @@ export interface Player {
   color: string;
 }
 
+/**
+ *
+ * @returns Connect-Four React app functional component
+ */
 function App() {
   const [currentPlayerNumber, setCurrentPlayerNumber] = useState(1);
-  const [players, setPlayers] = useState<any[]>([]);
+  const [players, setPlayers] = useState<[] | Player[]>([]);
   const [gameStarted, setGameStarted] = useState(false);
 
   useEffect(() => {
@@ -37,12 +40,11 @@ function App() {
       randomizeInitialPlayer(fetchedPlayers);
       setGameStarted(true);
     } else if (player1 && !player2) {
-      console.log("ONLY PLAYER 1 COnditional", JSON.parse(player1));
       setCurrentPlayerNumber(2);
     }
   };
 
-  const randomizeInitialPlayer = (fetchedPlayers: any) => {
+  const randomizeInitialPlayer = (fetchedPlayers: Player[]) => {
     if (!fetchedPlayers?.length) {
       // Will set players to have no length/sign up form player 1
       setCurrentPlayerNumber(1);
@@ -58,27 +60,31 @@ function App() {
       {!players?.length && (
         <CreateUserForm
           currentPlayerNumber={currentPlayerNumber}
-          setCurrentPlayerNumber={(evt: any) => setCurrentPlayerNumber(evt)}
+          setCurrentPlayerNumber={(evt: number) => setCurrentPlayerNumber(evt)}
           startGame={() => setGameStarted(true)}
         />
       )}
 
       {!!players?.length && gameStarted && (
-        <div>
+        <div className="main-game-container">
           <UsernameBanner
             players={players}
             currentPlayerNumber={currentPlayerNumber}
           />
+
+          {/* Commented out due to being playable, but having 1 bug in column 7*/}
           {/* <GameBoard
             players={players}
             currentPlayerNumber={currentPlayerNumber}
-            setCurrentPlayerNumber={(evt: any) => setCurrentPlayerNumber(evt)}
+            setCurrentPlayerNumber={(evt: number) => setCurrentPlayerNumber(evt)}
           /> */}
 
           <GameBoardV2
             players={players}
             currentPlayerNumber={currentPlayerNumber}
-            setCurrentPlayerNumber={(evt: any) => setCurrentPlayerNumber(evt)}
+            setCurrentPlayerNumber={(evt: number) =>
+              setCurrentPlayerNumber(evt)
+            }
           />
         </div>
       )}
