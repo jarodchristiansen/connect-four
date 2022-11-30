@@ -1,4 +1,4 @@
-# Getting Started with Create React App
+# Connect Four React-JS
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -14,33 +14,25 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Using the application
+Once it is running locally via the method listed above, you should be presented with the following screen (If running for the first time):
 
-### `npm run build`
+![sign-up](https://user-images.githubusercontent.com/50091942/204851714-74e94635-563e-4b3c-b345-2c76f77310d1.PNG)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+This should allow the first user to select their nickname and age, as well as the color of the pieces they will use. After completing this for the first user,  a similar screen will be presented for the second user. Once the second user has submit their details, the first game should be started. (Note: if this is not the first time running the game, your users should be saved locally, so once running the game should start automatically).
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+You should now be presented with the game screen, that looks as follows (after clicking columns to add a few pieces):
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+![board](https://user-images.githubusercontent.com/50091942/204852257-4954740c-a461-4e0b-afc4-9b712d6a04f2.png)
 
-### `npm run eject`
+This screen shows which users are currently playing, the game duration, score and current user's turn. By clicking on a column, you can add a color piece corresponding to your selection from before. 
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Once a user has been able to connect 4 of their same colored pieces together, you should be presented with the winner screen. 
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+![winner](https://user-images.githubusercontent.com/50091942/204852620-77ce45f9-67d7-42d6-b78b-54386a894aed.png)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+This should indicate which user has won the game (Or a stalemate if applicable) and allow you to start a new game, or check the scoreboard to visit the previous games you have played. 
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+If you choose to view the scoreboard you should be presented with the following:
+![scoreboard](https://user-images.githubusercontent.com/50091942/204853055-fb1542cf-6ed4-4c8d-994e-e65a650098f7.png)
