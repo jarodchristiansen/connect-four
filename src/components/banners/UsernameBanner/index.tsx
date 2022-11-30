@@ -6,6 +6,12 @@ interface UsernameBannerProps {
   currentPlayerNumber: number;
 }
 
+/**
+ *
+ * @property players: List of players entered on create form, pulled from localStorage
+ * @property currentPlayerNumber: Number of player selected at parent, (changes highlighted box/current turn)
+ * @returns GameBoardV2 component allowing 2 users to compete in connect four (functional component)
+ */
 const UsernameBanner = (props: UsernameBannerProps) => {
   const { players, currentPlayerNumber } = props;
 

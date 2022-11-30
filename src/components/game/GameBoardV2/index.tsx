@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Player } from "../../../../App";
-import ScoreBoard from "../../../scoreboard/ScoreBoard";
+import { Player } from "../../../App";
+import ScoreBoard from "../../scoreboard/ScoreBoard";
 import "./index.scss";
 
 interface GameBoardV2Props {
@@ -9,6 +9,18 @@ interface GameBoardV2Props {
   setCurrentPlayerNumber: (evt: number) => void;
 }
 
+export interface User {
+  nickname: string;
+  age: number;
+}
+
+/**
+ *
+ * @property players: List of players entered on create form, pulled from localStorage
+ * @property currentPlayerNumber: Number of player selected at parent, (controls turns/random player start)
+ * @property setCurrentPlayerNumber: controls player turn, allows alternating based on playing
+ * @returns GameBoardV2 component allowing 2 users to compete in connect four (functional component)
+ */
 const GameBoardV2 = (props: GameBoardV2Props) => {
   const { currentPlayerNumber, setCurrentPlayerNumber, players } = props;
   const [initialPlayerNumber, setInitialPlayerNumber] =
@@ -202,7 +214,7 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     return null;
   };
 
-  const addToScoreboard = (user?: { nickname: string; age: number }) => {
+  const addToScoreboard = (user?: User) => {
     let time = document.getElementById("count_up_timer")?.innerText;
 
     let scoreBoard = localStorage.getItem("scoreboard");
@@ -254,6 +266,7 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       cell.classList.add("win");
     }
 
+    // Changes which user starts each game after first is random
     if (initialPlayerNumber == 1) {
       setCurrentPlayerNumber(2);
       setInitialPlayerNumber(2);
@@ -396,10 +409,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     setIsTie(true);
     handleTimer("stop");
     setGameIsLive(false);
-
-    // if (statusSpan) {
-    //   statusSpan.textContent = "Game is a tie!";
-    // }
   };
 
   useEffect(() => {
@@ -435,15 +444,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
   };
 
   const startNewGame = () => {
-    // // Alternates starting player
-    // if (initialPlayerNumber == 1) {
-    //   setInitialPlayerNumber(2);
-    //   setCurrentPlayerNumber(2);
-    // } else if (initialPlayerNumber == 2) {
-    //   setInitialPlayerNumber(1);
-    //   setCurrentPlayerNumber(1);
-    // }
-
     // Clears cells to start new game
     for (const row of rows) {
       for (const cell of row) {
@@ -493,7 +493,7 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     let minute = Math.floor((totalSeconds - hour * 3600) / 60);
     let seconds = totalSeconds - (hour * 3600 + minute * 60);
 
-    let timeString = minute + ":" + seconds;
+    let timeString = minute + "(m)" + ":" + seconds + "(s)";
 
     return timeString;
   }
@@ -502,24 +502,33 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     <div>
       {!gameIsLive && showScoreboard && (
         <div>
-          <button onClick={startNewGame}>Start New Game</button>
+          <button onClick={startNewGame} className="standardized-button">
+            Start New Game
+          </button>
           <ScoreBoard />
         </div>
       )}
 
       <div>
         {!gameIsLive && !showScoreboard && (
-          <div>
-            Game Has Ended
+          <div className="announce-container">
+            <h2>Game Has Ended</h2>
             <div>
               {!!winner && !isTie && <h2>{winner?.nickname} is the winner</h2>}
               {!!winner && isTie && <h2>{winner?.nickname}</h2>}
-            </div>
-            <div>
-              <h3>Score: {score - 1}</h3>
 
-              <button onClick={startNewGame}>Start a new game</button>
-              <button onClick={renderScoreboard}>Go to the score board</button>
+              <h3>Score: {score - 1}</h3>
+            </div>
+            <div className="button-container">
+              <button onClick={startNewGame} className="standardized-button">
+                Start a new game
+              </button>
+              <button
+                onClick={renderScoreboard}
+                className="standardized-button"
+              >
+                Go to the score board
+              </button>
             </div>
           </div>
         )}

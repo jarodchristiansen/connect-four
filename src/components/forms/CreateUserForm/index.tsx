@@ -7,6 +7,13 @@ interface CreateUserFromProps {
   startGame: () => void;
 }
 
+/**
+ *
+ * @property currentPlayerNumber: Number of player selected at parent, (changes which user is signing up)
+ * @property setCurrentPlayerNumber: controls player turn, allows alternating based on playing/choosing details
+ * @property startGame: function that changes from createUserForm to start the game on first landing
+ * @returns CreateUserForm: component that allows users to enter nickname/age and select their piece color
+ */
 const CreateUserForm = (props: CreateUserFromProps) => {
   const { currentPlayerNumber, setCurrentPlayerNumber, startGame } = props;
 

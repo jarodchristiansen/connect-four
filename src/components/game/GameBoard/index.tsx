@@ -10,6 +10,13 @@ interface GameBoardProps {
   setCurrentPlayerNumber: React.Dispatch<React.SetStateAction<number>>;
 }
 
+/**
+ *
+ * @property players: List of players entered on create form, pulled from localStorage
+ * @property currentPlayerNumber: Number of player selected at parent, (controls turns/random player start)
+ * @property setCurrentPlayerNumber: controls player turn, allows alternating based on playing
+ * @returns GameBoard component (First version, commented out due to styling/last column bug)
+ */
 const GameBoard = (props: GameBoardProps) => {
   const { currentPlayerNumber, setCurrentPlayerNumber, players } = props;
   const [initialPlayerNumber, setInitialPlayerNumber] =

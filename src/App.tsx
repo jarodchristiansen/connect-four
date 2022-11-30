@@ -3,7 +3,7 @@ import "./App.scss";
 import CreateUserForm from "./components/forms/CreateUserForm";
 import UsernameBanner from "./components/banners/UsernameBanner";
 import GameBoard from "./components/game/GameBoard";
-import GameBoardV2 from "./components/game/GameBoard/GameBoardV2";
+import GameBoardV2 from "./components/game/GameBoardV2";
 
 export interface Player {
   nickname: string;
@@ -12,6 +12,10 @@ export interface Player {
   color: string;
 }
 
+/**
+ *
+ * @returns Connect-Four React app functional component
+ */
 function App() {
   const [currentPlayerNumber, setCurrentPlayerNumber] = useState(1);
   const [players, setPlayers] = useState<[] | Player[]>([]);
@@ -62,11 +66,13 @@ function App() {
       )}
 
       {!!players?.length && gameStarted && (
-        <div>
+        <div className="main-game-container">
           <UsernameBanner
             players={players}
             currentPlayerNumber={currentPlayerNumber}
           />
+
+          {/* Commented out due to being playable, but having 1 bug in column 7*/}
           {/* <GameBoard
             players={players}
             currentPlayerNumber={currentPlayerNumber}
