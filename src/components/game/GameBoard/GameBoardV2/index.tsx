@@ -25,6 +25,8 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     age: number;
   }>(null);
 
+  const countRef = React.useRef(null as any);
+
   useEffect(() => {
     // Sets initial value of pieces being used in connection with user choice.
     if (players[currentPlayerNumber - 1].color === "yellow") {
@@ -33,6 +35,10 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       setYellowIsNext(false);
     }
   }, [players]);
+
+  useEffect(() => {
+    handleTimer();
+  }, []);
 
   const allCells = document.querySelectorAll(".cell:not(.row-top)");
 
@@ -232,6 +238,8 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
 
     setGameIsLive(false);
 
+    handleTimer("stop");
+
     let playerWinner = localStorage.getItem(`player ${currentPlayerNumber}`);
 
     if (playerWinner) {
@@ -242,47 +250,16 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
 
     addToScoreboard();
 
-    // let time = document.getElementById("count_up_timer")?.innerText;
-
-    // let scoreBoard = localStorage.getItem("scoreboard");
-
-    // if (scoreBoard) {
-    //   let parsed = JSON.parse(scoreBoard);
-    //   if (parsed?.length) {
-    //     parsed.push({
-    //       nickname: players[currentPlayerNumber - 1]?.nickname,
-    //       score: score,
-    //       duration: time,
-    //     });
-    //   }
-    //   localStorage.setItem(`scoreboard`, JSON.stringify(parsed));
-    // } else {
-    //   const data = [
-    //     {
-    //       nickname: players[currentPlayerNumber - 1]?.nickname,
-    //       score: score,
-    //       duration: time,
-    //     },
-    //   ];
-    //   localStorage.setItem(`scoreboard`, JSON.stringify(data));
-    // }
-
     for (const cell of cells) {
       cell.classList.add("win");
     }
 
-    // if (statusSpan) {
-    //   statusSpan.textContent = `${players[
-    //     currentPlayerNumber
-    //   ]?.nickname.toUpperCase()} has won!`;
-    // }
-
     if (initialPlayerNumber == 1) {
-      setInitialPlayerNumber(2);
       setCurrentPlayerNumber(2);
+      setInitialPlayerNumber(2);
     } else if (initialPlayerNumber == 2) {
-      setInitialPlayerNumber(1);
       setCurrentPlayerNumber(1);
+      setInitialPlayerNumber(1);
     }
 
     return true;
@@ -417,6 +394,7 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     }
 
     setIsTie(true);
+    handleTimer("stop");
     setGameIsLive(false);
 
     // if (statusSpan) {
@@ -476,6 +454,7 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     }
 
     setIsTie(false);
+    handleTimer();
     setGameIsLive(true);
     setScore(1);
 
@@ -486,22 +465,37 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     setShowScoreboard(true);
   };
 
-  //TODO: Improve from setInterval to something more robust
-  setInterval(countUpTimer, 1000);
-  let totalSeconds = 0;
+  function handleTimer(command?: string) {
+    let timerElement = document.getElementById("count_up_timer");
 
-  function countUpTimer() {
-    ++totalSeconds;
+    if (timerElement) {
+      if (!command) {
+        timerElement.innerText = "0";
+        let startTime = new Date();
+
+        countRef.current = setInterval(() => {
+          if (timerElement) {
+            timerElement.innerText = getTimerTime(startTime);
+          }
+        }, 1000);
+      }
+
+      if (command) {
+        clearInterval(countRef.current);
+      }
+    }
+  }
+
+  function getTimerTime(startTime: any) {
+    let totalSeconds = Math.floor(((new Date() as any) - startTime) / 1000);
+
     let hour = Math.floor(totalSeconds / 3600);
     let minute = Math.floor((totalSeconds - hour * 3600) / 60);
     let seconds = totalSeconds - (hour * 3600 + minute * 60);
-    let timeString = hour + ":" + minute + ":" + seconds;
 
-    let timerDOM = document.getElementById("count_up_timer");
+    let timeString = minute + ":" + seconds;
 
-    if (timerDOM) {
-      timerDOM.innerHTML = timeString;
-    }
+    return timeString;
   }
 
   return (
