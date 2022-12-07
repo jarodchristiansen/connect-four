@@ -431,7 +431,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     openCell.classList.add(yellowIsNext ? "yellow" : "red");
     checkStatusOfGame(openCell);
 
-    // Extra verbose due to inconsistent flashing
     if (currentPlayerNumber === 1) {
       setCurrentPlayerNumber(2);
     } else if (currentPlayerNumber === 2) {
@@ -442,7 +441,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
   };
 
   const startNewGame = () => {
-    // Clears cells to start new game
     for (const row of rows) {
       for (const cell of row) {
         cell.classList.remove("red");
