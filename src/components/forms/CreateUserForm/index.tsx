@@ -49,7 +49,6 @@ const CreateUserForm = (props: CreateUserFromProps) => {
       color === "red" ? setColor("yellow") : setColor("red");
 
       setCurrentPlayerNumber(2);
-      // Sets second user piece automatically based on what previous user selection
     } else {
       startGame();
     }

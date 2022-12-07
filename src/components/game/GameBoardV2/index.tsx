@@ -174,7 +174,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     return [row0, row1, row2, row3, row4, row5];
   }, [gameIsLive, showScoreboard, allCells]);
 
-  // Functions
   const getClassListArray = (cell: any) => {
     const classList = cell.classList;
     return [...classList];
@@ -266,7 +265,6 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
       cell.classList.add("win");
     }
 
-    // Changes which user starts each game after first is random
     if (initialPlayerNumber == 1) {
       setCurrentPlayerNumber(2);
       setInitialPlayerNumber(2);
@@ -461,36 +459,28 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     !!showScoreboard && setShowScoreboard(false);
   };
 
-  const renderScoreboard = () => {
-    setShowScoreboard(true);
-  };
-
   function handleTimer(command?: string) {
     let timerElement = document.getElementById("count_up_timer");
 
     if (timerElement) {
-      // Starts timer if no 'stop' command present
       if (!command) {
         timerElement.innerText = "0";
         let startTime = new Date();
 
         countRef.current = setInterval(() => {
           if (timerElement) {
-            // Uses getTimerTime due to setInterval instability
             timerElement.innerText = getTimerTime(startTime);
           }
         }, 1000);
       }
 
-      // If command is found, stops ref (command used is 'stop')
       if (command) {
         clearInterval(countRef.current);
       }
     }
   }
 
-  function getTimerTime(startTime: any) {
-    // Used to resolve setInterval inconsistency, uses absolute time from call/totalSecond calc
+  const getTimerTime = (startTime: any) => {
     let totalSeconds = Math.floor(((new Date() as any) - startTime) / 1000);
 
     let hour = Math.floor(totalSeconds / 3600);
@@ -500,7 +490,15 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
     let timeString = minute + "(m)" + ":" + seconds + "(s)";
 
     return timeString;
-  }
+  };
+
+  const clearUsers = () => {
+    localStorage.clear();
+
+    if (typeof window !== "undefined") {
+      window.location.href = "/";
+    }
+  };
 
   return (
     <div>
@@ -527,11 +525,18 @@ const GameBoardV2 = (props: GameBoardV2Props) => {
               <button onClick={startNewGame} className="standardized-button">
                 Start a new game
               </button>
+
+              <a href="/scoreboard">
+                <button className="standardized-button">
+                  Go to the score board
+                </button>
+              </a>
+
               <button
-                onClick={renderScoreboard}
+                onClick={() => clearUsers()}
                 className="standardized-button"
               >
-                Go to the score board
+                Clear User
               </button>
             </div>
           </div>
