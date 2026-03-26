@@ -30,7 +30,7 @@ const ScoreBoard = () => {
         idx: number
       ) => {
         return (
-          <div className="score-row">
+          <div className="score-row" key={`${idx}-${score.nickname}-${score.score}`}>
             <h3>Game: {idx + 1}</h3>
             <h3>
               <span>Winner:</span> <span>{score.nickname}</span>
