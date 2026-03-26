@@ -41,7 +41,9 @@ const UsernameBanner = (props: UsernameBannerProps) => {
 
             <div className="timer-container">
               <h3>Duration</h3>
-              <h3 id="count_up_timer"></h3>
+              <h3 id="count_up_timer" aria-live="polite">
+                0
+              </h3>
             </div>
           </div>
 
